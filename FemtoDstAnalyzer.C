@@ -1146,10 +1146,10 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
     TProfile2D *tp_v2PID[2][3][3][n-2], *tp_v3PID[2][3][3][n-2];
     TProfile2D *tp_v2PID_sys[2][3][3][n-2][3], *tp_v3PID_sys[2][3][3][n-2][3];
     //TProfile for mean pt for PID and hadrons
-    TProfile *tp_meanPt_PID[2][3][3][n-2];
-    TProfile *tp_meanPt_PID_sys[2][3][3][n-2][3];
-    TProfile *tp_meanPt_hadrons[3][n-2];
-    TProfile *tp_meanPt_hadrons_sys[3][n-2][3];
+    TProfile2D *tp_meanPt_PID[2][3][3][n-2];
+    TProfile2D *tp_meanPt_PID_sys[2][3][3][n-2][3];
+    TProfile2D *tp_meanPt_hadrons[3][n-2];
+    TProfile2D *tp_meanPt_hadrons_sys[3][n-2][3];
 
     for(Int_t det = 0; det < 2; det++) {
       for(Int_t j = 0; j < c; j++) {
@@ -1169,7 +1169,7 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
         tp_v3[j][i] = new TProfile2D(Form("tp_v3_hadrons%s%s",detector[j],ngap[i]),
                           Form("v_{3} of p_{t} and cent %s by %s;p_{t} [GeV/c];cent",gap[i],detector[j]),30,0.2,3.2,9,0,9);
         tp_meanPt_hadrons[j][i] = new TProfile(Form("tp_meanPt_hadrons%s%s",detector[j],ngap[i]),
-                          Form("Mean p_{t} for bins v_{2} #Delta#eta-gap=%s %s; bin; p_{t} [GeV/c]",gap[i],detector[j]), 30, 0.2, 3.2);
+                          Form("Mean p_{t} for bins v_{2} #Delta#eta-gap=%s %s; bin; p_{t} [GeV/c]",gap[i],detector[j]),30,0.2,3.2,9,0,9);
 
         if(i < 3 && j==0){
           for(Int_t nsys = 0; nsys < 3; nsys++){
@@ -1179,7 +1179,7 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
             tp_v3_sys[j][i][nsys] = new TProfile2D(Form("tp_v3_hadrons%s%s%s",detector[j],ngap[i],systematic[nsys]),
                               Form("v_{3} of p_{t} and cent %s by %s Systematic:%s;p_{t} [GeV/c];cent",gap[i],detector[j],systematic[nsys]),30,0.2,3.2,9,0,9);
             tp_meanPt_hadrons_sys[j][i][nsys] = new TProfile(Form("tp_meanPt_hadrons%s%s%s",detector[j],ngap[i],systematic[nsys]),
-                          Form("Mean p_{t} for bins v_{2} #Delta#eta-gap=%s %s Systematic:%s; bin; p_{t} [GeV/c]",gap[i],detector[j],systematic[nsys]), 30, 0.2, 3.2);
+                          Form("Mean p_{t} for bins v_{2} #Delta#eta-gap=%s %s Systematic:%s; bin; p_{t} [GeV/c]",gap[i],detector[j],systematic[nsys]),30,0.2,3.2,9,0,9);
           }
         }
 
@@ -1191,7 +1191,7 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
             tp_v3PID[l][k][j][i] = new TProfile2D( Form("tp_v3_%s%s%s%s",particles[k],sign[l],detector[j],ngap[i]), 
               Form("v_{3} for %s of p_{t} and cent %s by %s;p_{t} [GeV/c];cent",partLateX[part],gap[i],detector[j]),30,0.2,3.2,9,0,9);
             tp_meanPt_PID[l][k][j][i] = new TProfile(Form("tp_meanPt_%s%s%s%s",particles[k],sign[l],detector[j],ngap[i]),
-              Form("Mean p_{t} for %s of p_{t} and cent %s by %s;p_{t} [GeV/c];cent",particles[k],sign[l],detector[j],ngap[i]), 30, 0.2, 3.2);
+              Form("Mean p_{t} for %s of p_{t} and cent %s by %s;p_{t} [GeV/c];cent",particles[k],sign[l],detector[j],ngap[i]), 30,0.2,3.2,9,0,9);
             
             if(i < 3 && j==0){
               for(Int_t nsys = 0; nsys < 3; nsys++){
@@ -1200,7 +1200,7 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
                 tp_v3PID_sys[l][k][j][i][nsys] = new TProfile2D( Form("tp_v3_%s%s%s%s%s",particles[k],sign[l],detector[j],ngap[i], systematic[nsys]), 
                   Form("v_{3} for %s of p_{t} and cent %s by %s Systematic: %s;p_{t} [GeV/c];cent",partLateX[part],gap[i],detector[j], systematic[nsys]),30,0.2,3.2,9,0,9);
                 tp_meanPt_PID_sys[l][k][j][i][nsys] = new TProfile(Form("tp_meanPt_%s%s%s%s%s",particles[k],sign[l],detector[j],ngap[i], systematic[nsys]),
-                  Form("Mean p_{t} for %s of p_{t} and cent %s by %s Systematic: %s;p_{t} [GeV/c];cent",particles[k],sign[l],detector[j],ngap[i],systematic[nsys]), 30, 0.2, 3.2);
+                  Form("Mean p_{t} for %s of p_{t} and cent %s by %s Systematic: %s;p_{t} [GeV/c];cent",particles[k],sign[l],detector[j],ngap[i],systematic[nsys]),,30,0.2,3.2,9,0,9);
               }
             }
             part++;
@@ -1512,17 +1512,17 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
                   if( TMath::Abs( pVtx.Z() ) < sys_VtxZ){
                     tp_v2_sys[det][eta][0]->Fill(pt, (Double_t)cent, v2, w );
                     tp_v3_sys[det][eta][0]->Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_hadrons_sys[det][eta][0] -> Fill(pt,pt);
+                    tp_meanPt_hadrons_sys[det][eta][0] -> Fill(pt,(Double_t)cent,pt);
                   }
                   if( femtoTrack -> nHits() > sys_nHits){
                     tp_v2_sys[det][eta][1]->Fill(pt, (Double_t)cent, v2, w );
                     tp_v3_sys[det][eta][1]->Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_hadrons_sys[det][eta][1] -> Fill(pt,pt);
+                    tp_meanPt_hadrons_sys[det][eta][1] -> Fill(pt,(Double_t)cent,pt);
                   }
                   if( femtoTrack->gDCA(pVtx).Mag() < sys_DCA){
                     tp_v2_sys[det][eta][2]->Fill(pt, (Double_t)cent, v2, w );
                     tp_v3_sys[det][eta][2]->Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_hadrons_sys[det][eta][2] -> Fill(pt,pt);
+                    tp_meanPt_hadrons_sys[det][eta][2] -> Fill(pt,(Double_t)cent,pt);
                   }  
                 }
 
@@ -1531,7 +1531,7 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
                   tp_v3cent[det][eta] -> Fill( (Double_t)cent, v3, w );
                   tp_v2[det][eta] -> Fill(pt, (Double_t)cent, v2, w );
                   tp_v3[det][eta] -> Fill(pt, (Double_t)cent, v3, w );
-                  tp_meanPt_hadrons[det][eta] -> Fill(pt,pt);
+                  tp_meanPt_hadrons[det][eta] -> Fill(pt,(Double_t)cent,pt);
                 }
                 
 
@@ -1540,24 +1540,24 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
                     if( femtoTrack->gDCA(pVtx).Mag() < DCA_FLOW){
                       tp_v2PID[q_charge][part][det][eta] -> Fill(pt, (Double_t)cent, v2, w );
                       tp_v3PID[q_charge][part][det][eta] -> Fill(pt, (Double_t)cent, v3, w );
-                      tp_meanPt_PID[q_charge][part][det][eta] -> Fill(pt,pt);
+                      tp_meanPt_PID[q_charge][part][det][eta] -> Fill(pt,(Double_t)cent,pt);
                     }
             
                     if(eta<3){
                       if( TMath::Abs( pVtx.Z() ) < sys_VtxZ){
                         tp_v2PID_sys[q_charge][part][det][eta][0] -> Fill(pt, (Double_t)cent, v2, w );
                         tp_v3PID_sys[q_charge][part][det][eta][0] -> Fill(pt, (Double_t)cent, v3, w );
-                        tp_meanPt_PID_sys[q_charge][part][det][eta][0] -> Fill(pt,pt);
+                        tp_meanPt_PID_sys[q_charge][part][det][eta][0] -> Fill(pt,(Double_t)cent,pt);
                       }
                       if( femtoTrack -> nHits() > sys_nHits){
                         tp_v2PID_sys[q_charge][part][det][eta][1] -> Fill(pt, (Double_t)cent, v2, w );
                         tp_v3PID_sys[q_charge][part][det][eta][1] -> Fill(pt, (Double_t)cent, v3, w );
-                        tp_meanPt_PID_sys[q_charge][part][det][eta][1] -> Fill(pt,pt);
+                        tp_meanPt_PID_sys[q_charge][part][det][eta][1] -> Fill(pt,(Double_t)cent,pt);
                       }
                       if( femtoTrack->gDCA(pVtx).Mag() < sys_DCA){
                         tp_v2PID_sys[q_charge][part][det][eta][2] -> Fill(pt, (Double_t)cent, v2, w );
                         tp_v3PID_sys[q_charge][part][det][eta][2] -> Fill(pt, (Double_t)cent, v3, w );
-                        tp_meanPt_PID_sys[q_charge][part][det][eta][2] -> Fill(pt,pt);
+                        tp_meanPt_PID_sys[q_charge][part][det][eta][2] -> Fill(pt,(Double_t)cent,pt);
                       }  
                     }
                   }
@@ -1572,17 +1572,17 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
                   if( femtoTrack -> nHits() > sys_nHits){
                     tp_v2_sys[det][eta][0]->Fill(pt, (Double_t)cent, v2, w );
                     tp_v3_sys[det][eta][0]->Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_hadrons_sys[det][eta][0] -> Fill(pt,pt);
+                    tp_meanPt_hadrons_sys[det][eta][0] -> Fill(pt,(Double_t)cent,pt);
                   }
                   if( TMath::Abs( pVtx.Z() ) < sys_VtxZ){
                     tp_v2_sys[det][eta][1]->Fill(pt, (Double_t)cent, v2, w );
                     tp_v3_sys[det][eta][1]->Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_hadrons_sys[det][eta][1] -> Fill(pt,pt);
+                    tp_meanPt_hadrons_sys[det][eta][1] -> Fill(pt,(Double_t)cent,pt);
                   }
                   if( femtoTrack->gDCA(pVtx).Mag() < sys_DCA){
                     tp_v2_sys[det][eta][2]->Fill(pt, (Double_t)cent, v2, w );
                     tp_v3_sys[det][eta][2]->Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_hadrons_sys[det][eta][2] -> Fill(pt,pt);
+                    tp_meanPt_hadrons_sys[det][eta][2] -> Fill(pt,(Double_t)cent,pt);
                   }  
                 }
 
@@ -1593,31 +1593,31 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
                   tp_v3[det][eta] -> Fill(pt, (Double_t)cent, v3, w );
                 }
                 
-                tp_meanPt_hadrons[det][eta] -> Fill(pt,pt);
+                tp_meanPt_hadrons[det][eta] -> Fill(pt,(Double_t)cent,pt);
 
                 for(Int_t part = 0; part < 3; part++) {
                   if( TMath::Abs( nSigma[part] ) < nSigm && SqM > SqMdown[part] && SqM < SqMup[part]) {
                     if( femtoTrack->gDCA(pVtx).Mag() < DCA_FLOW){
                       tp_v2PID[q_charge][part][det][eta] -> Fill(pt, (Double_t)cent, v2, w );
                       tp_v3PID[q_charge][part][det][eta] -> Fill(pt, (Double_t)cent, v3, w );
-                      tp_meanPt_PID[q_charge][part][det][eta] -> Fill(pt,pt);
+                      tp_meanPt_PID[q_charge][part][det][eta] -> Fill(pt,(Double_t)cent,pt);
                     }
             
                     if(eta<3){
                       if( TMath::Abs( pVtx.Z() ) < sys_VtxZ){
                         tp_v2PID_sys[q_charge][part][det][eta][0] -> Fill(pt, (Double_t)cent, v2, w );
                         tp_v3PID_sys[q_charge][part][det][eta][0] -> Fill(pt, (Double_t)cent, v3, w );
-                        tp_meanPt_PID_sys[q_charge][part][det][eta][0] -> Fill(pt,pt);
+                        tp_meanPt_PID_sys[q_charge][part][det][eta][0] -> Fill(pt,(Double_t)cent,pt);
                       }
                       if( femtoTrack -> nHits() > sys_nHits){
                         tp_v2PID_sys[q_charge][part][det][eta][1] -> Fill(pt, (Double_t)cent, v2, w );
                         tp_v3PID_sys[q_charge][part][det][eta][1] -> Fill(pt, (Double_t)cent, v3, w );
-                        tp_meanPt_PID_sys[q_charge][part][det][eta][1] -> Fill(pt,pt);
+                        tp_meanPt_PID_sys[q_charge][part][det][eta][1] -> Fill(pt,(Double_t)cent,pt);
                       }
                       if( femtoTrack->gDCA(pVtx).Mag() < sys_DCA){
                         tp_v2PID_sys[q_charge][part][det][eta][2] -> Fill(pt, (Double_t)cent, v2, w );
                         tp_v3PID_sys[q_charge][part][det][eta][2] -> Fill(pt, (Double_t)cent, v3, w );
-                        tp_meanPt_PID_sys[q_charge][part][det][eta][2] -> Fill(pt,pt);
+                        tp_meanPt_PID_sys[q_charge][part][det][eta][2] -> Fill(pt,(Double_t)cent,pt);
                       }  
                     }
                   }
@@ -1635,18 +1635,18 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
                 tp_v2[det][eta] -> Fill(pt, (Double_t)cent, v2, w );
                 tp_v3[det][eta] -> Fill(pt, (Double_t)cent, v3, w );
 
-                tp_meanPt_hadrons[det][eta] -> Fill(pt,pt);
+                tp_meanPt_hadrons[det][eta] -> Fill(pt,(Double_t)cent,pt);
 
                 for(Int_t part = 0; part < 3; part++) {
                   if( TMath::Abs( nSigma[part] ) < nSigm && q > 0 && SqM > SqMdown[part] && SqM < SqMup[part]) {
                     tp_v2PID[0][part][det][eta] -> Fill(pt, (Double_t)cent, v2, w );
                     tp_v3PID[0][part][det][eta] -> Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_PID[0][part][det][eta] -> Fill(pt,pt);
+                    tp_meanPt_PID[0][part][det][eta] -> Fill(pt,(Double_t)cent,pt);
                   }
                   if( TMath::Abs( nSigma[part] ) < nSigm && q < 0 && SqM > SqMdown[part] && SqM < SqMup[part]) {
                     tp_v2PID[1][part][det][eta] -> Fill(pt, (Double_t)cent, v2, w );
                     tp_v3PID[1][part][det][eta] -> Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_PID[1][part][det][eta] -> Fill(pt,pt);
+                    tp_meanPt_PID[1][part][det][eta] -> Fill(pt,(Double_t)cent,pt);
                   }
                 }
               }
@@ -1664,12 +1664,12 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
                   if( TMath::Abs( nSigma[part] ) < nSigm && q > 0 && SqM > SqMdown[part] && SqM < SqMup[part]) {
                     tp_v2PID[0][part][det][eta] -> Fill(pt, (Double_t)cent, v2, w );
                     tp_v3PID[0][part][det][eta] -> Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_PID[0][part][det][eta] -> Fill(pt,pt);
+                    tp_meanPt_PID[0][part][det][eta] -> Fill(pt,(Double_t)cent,pt);
                   }
                   if( TMath::Abs( nSigma[part] ) < nSigm && q < 0 && SqM > SqMdown[part] && SqM < SqMup[part]) {
                     tp_v2PID[1][part][det][eta] -> Fill(pt, (Double_t)cent, v2, w );
                     tp_v3PID[1][part][det][eta] -> Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_PID[1][part][det][eta] -> Fill(pt,pt);
+                    tp_meanPt_PID[1][part][det][eta] -> Fill(pt,(Double_t)cent,pt);
                   }
                 }
               }
@@ -1692,18 +1692,18 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
                 tp_v2[det][eta] -> Fill(pt, (Double_t)cent, v2, w );
                 tp_v3[det][eta] -> Fill(pt, (Double_t)cent, v3, w );
 
-                tp_meanPt_hadrons[det][eta] -> Fill(pt,pt);
+                tp_meanPt_hadrons[det][eta] -> Fill(pt,(Double_t)cent,pt);
 
                 for(Int_t part = 0; part < 3; part++) {
                   if( TMath::Abs( nSigma[part] ) < 3 && q > 0 && SqM > SqMdown[part] && SqM < SqMup[part]) {
                     tp_v2PID[0][part][det][eta] -> Fill(pt, (Double_t)cent, v2, w );
                     tp_v3PID[0][part][det][eta] -> Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_PID[0][part][det][eta] -> Fill(pt,pt);
+                    tp_meanPt_PID[0][part][det][eta] -> Fill(pt,(Double_t)cent,pt);
                   }
                   if( TMath::Abs( nSigma[part] ) < 3 && q < 0 && SqM > SqMdown[part] && SqM < SqMup[part]) {
                     tp_v2PID[1][part][det][eta] -> Fill(pt, (Double_t)cent, v2, w );
                     tp_v3PID[1][part][det][eta] -> Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_PID[1][part][det][eta] -> Fill(pt,pt);
+                    tp_meanPt_PID[1][part][det][eta] -> Fill(pt,(Double_t)cent,pt);
 
                   }
                 }
@@ -1718,18 +1718,18 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
                 tp_v2[det][eta] -> Fill(pt, (Double_t)cent, v2, w );
                 tp_v3[det][eta] -> Fill(pt, (Double_t)cent, v3, w );
 
-                tp_meanPt_hadrons[det][eta] -> Fill(pt,pt);
+                tp_meanPt_hadrons[det][eta] -> Fill(pt,(Double_t)cent,pt);
 
                 for(Int_t part = 0; part < 3; part++) {
                   if( TMath::Abs( nSigma[part] ) < 3 && q > 0 && SqM > SqMdown[part] && SqM < SqMup[part]) {
                     tp_v2PID[0][part][det][eta] -> Fill(pt, (Double_t)cent, v2, w );
                     tp_v3PID[0][part][det][eta] -> Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_PID[0][part][det][eta] -> Fill(pt,pt);
+                    tp_meanPt_PID[0][part][det][eta] -> Fill(pt,(Double_t)cent,pt);
                   }
                   if( TMath::Abs( nSigma[part] ) < 3 && q < 0 && SqM > SqMdown[part] && SqM < SqMup[part]) {
                     tp_v2PID[1][part][det][eta] -> Fill(pt, (Double_t)cent, v2, w );
                     tp_v3PID[1][part][det][eta] -> Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_PID[1][part][det][eta] -> Fill(pt,pt);
+                    tp_meanPt_PID[1][part][det][eta] -> Fill(pt,(Double_t)cent,pt);
 
                   }
                 }
@@ -1746,18 +1746,18 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
                 tp_v2[det][eta] -> Fill(pt, (Double_t)cent, v2, w );
                 tp_v3[det][eta] -> Fill(pt, (Double_t)cent, v3, w );
 
-                tp_meanPt_hadrons[det][eta] -> Fill(pt,pt);
+                tp_meanPt_hadrons[det][eta] -> Fill(pt,(Double_t)cent,pt);
 
                 for(Int_t part = 0; part < 3; part++) {
                   if( TMath::Abs( nSigma[part] ) < 3 && q > 0 && SqM > SqMdown[part] && SqM < SqMup[part]) {
                     tp_v2PID[0][part][det][eta] -> Fill(pt, (Double_t)cent, v2, w );
                     tp_v3PID[0][part][det][eta] -> Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_PID[0][part][det][eta] -> Fill(pt,pt);
+                    tp_meanPt_PID[0][part][det][eta] -> Fill(pt,(Double_t)cent,pt);
                   }
                   if( TMath::Abs( nSigma[part] ) < 3 && q < 0 && SqM > SqMdown[part] && SqM < SqMup[part]) {
                     tp_v2PID[1][part][det][eta] -> Fill(pt, (Double_t)cent, v2, w );
                     tp_v3PID[1][part][det][eta] -> Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_PID[1][part][det][eta] -> Fill(pt,pt);
+                    tp_meanPt_PID[1][part][det][eta] -> Fill(pt,(Double_t)cent,pt);
                   }
                 }
               }
@@ -1775,12 +1775,12 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
                   if( TMath::Abs( nSigma[part] ) < 3 && q > 0 && SqM > SqMdown[part] && SqM < SqMup[part]) {
                     tp_v2PID[0][part][det][eta] -> Fill(pt, (Double_t)cent, v2, w );
                     tp_v3PID[0][part][det][eta] -> Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_PID[0][part][det][eta] -> Fill(pt,pt);
+                    tp_meanPt_PID[0][part][det][eta] -> Fill(pt,(Double_t)cent,pt);
                   }
                   if( TMath::Abs( nSigma[part] ) < 3 && q < 0 && SqM > SqMdown[part] && SqM < SqMup[part]) {
                     tp_v2PID[1][part][det][eta] -> Fill(pt, (Double_t)cent, v2, w );
                     tp_v3PID[1][part][det][eta] -> Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_PID[1][part][det][eta] -> Fill(pt,pt);
+                    tp_meanPt_PID[1][part][det][eta] -> Fill(pt,(Double_t)cent,pt);
                   }
                 }
               }
