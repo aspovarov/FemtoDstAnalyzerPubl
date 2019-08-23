@@ -341,48 +341,66 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
       }// loop by cent
     }// loop by direstion
   	
-  	// Histogramms for QA mode
-  	if( strncmp(mode, "QA",2)==0 ){
-	    // Event
-	    TH1D *hRefMult = new TH1D("hRefMult", "Reference multiplicity;RefMult;Entries",
+  	//***************HISTOGRMS AND PROFILES FOR QA MODE***************//
+  	//*****Event*****//
+  	TH1D *hRefMult, *hVtxZ, *hRefMult2, *hGRefMult, *hNumberOfPrimaries, *hNumberOfGlobals;
+  	TH1D *hCent9, *hCent16, *hBTofHit, *hBTofMatched, *hBemcMatched, *hRanking;
+  	TH1D *hTransSphericity, *hTransSphericity2, *hNumberOfVertices;
+  	TH2D *hVtxXvsY, *hVpdVzDiffVsVz, *hBTofTrayMultVsRefMult,
+  	TProfile *hEventProfile[8];  
+  	//*****Track*****// 
+  	TH1D *hGlobalPtot, *hPrimaryPtot, *hGlobalPt, *hPrimaryPt, *hNHits, *hNHitsRatio;
+  	TH1D *hChi2, *hDca, *hPhi, *hEta, *hEtaG, *hDedx;
+  	TH2D *hDcaVsPt, *hPtVsEta, *hPrimaryPhiVsPt[2], *hDedxVsPt; 
+  	TH2D *hNSigmaPionVsPt, *hNSigmaElectronVsPt, *hNSigmaKaonVsPt, *hNSigmaProtonVsPt;
+  	TH2D *hDedxVsPtPID[4];
+  	TProfile *hTrackProfile[6];
+  	//*****TofPidTrait*****//
+  	TH1D *hTofBeta, *hMassSqr;
+  	TH2D *hInvBetaVsPt, *hMassSqrVsPt, *hDedxVsMassSqr[2], 
+  	TH2D *hInvBetaDiffElectronVsPt, *hInvBetaDiffPionVsPt, *hInvBetaDiffKaonVsPt, *hInvBetaDiffProtonVsPt;
+  	
+  	if( strncmp(mode, "QA",2)==0 ) {
+		//*****Event*****//
+	   	hRefMult = new TH1D("hRefMult", "Reference multiplicity;RefMult;Entries",
 	                              600, -0.5, 599.5);
-	    TH2D *hVtxXvsY = new TH2D("hVtxXvsY", "hVtxXvsY;x (cm);y (cm)",
+	    hVtxXvsY = new TH2D("hVtxXvsY", "hVtxXvsY;x (cm);y (cm)",
 	                              200,-10.,10.,200,-10.,10.);
-	    TH1D *hVtxZ = new TH1D("hVtxZ","hVtxZ;z (cm); Entries",
+	   	hVtxZ = new TH1D("hVtxZ","hVtxZ;z (cm); Entries",
 	                           140, -70., 70.);
-	    TH1D *hRefMult2 = new TH1D("hRefMult2","Reference multiplicity in |#eta|<1;RefMult2;Entries",
+	   	hRefMult2 = new TH1D("hRefMult2","Reference multiplicity in |#eta|<1;RefMult2;Entries",
 	                               600, -0.5, 599.5);
-	    TH1D *hGRefMult = new TH1D("hGRefMult","Reference multiplicity of global tracks;gRefMult;Entries",
+	   	hGRefMult = new TH1D("hGRefMult","Reference multiplicity of global tracks;gRefMult;Entries",
 	                               800, -0.5, 799.5);
-	    TH1D *hNumberOfPrimaries = new TH1D("hNumberOfPrimaries","Number of primary tracks;Number of primary tracks;Entries",
+	   	hNumberOfPrimaries = new TH1D("hNumberOfPrimaries","Number of primary tracks;Number of primary tracks;Entries",
 	                                        600, -0.5, 599.5);
-	    TH1D *hNumberOfGlobals = new TH1D("hNumberOfGlobals","Number of global tracks;Number of global tracks;Entries",
+	   	hNumberOfGlobals = new TH1D("hNumberOfGlobals","Number of global tracks;Number of global tracks;Entries",
 	                                      600, -0.5, 599.5);
-	    TH1D *hCent9 = new TH1D("hCent9","Centralitity;Cent9;Entries",
+	   	hCent9 = new TH1D("hCent9","Centralitity;Cent9;Entries",
 	                            13, -1.5, 11.5);
-	    TH1D *hCent16 = new TH1D("hCent16","Centralitity;Cent16;Entries",
+	   	hCent16 = new TH1D("hCent16","Centralitity;Cent16;Entries",
 	                            19, -1.5, 17.5);
-	    TH1D *hBTofHit = new TH1D("hBTofHit","Number of hits in TOF;bTofTrayMult;Entries",
+	   	hBTofHit = new TH1D("hBTofHit","Number of hits in TOF;bTofTrayMult;Entries",
 	                              600, -0.5, 599.5);
-	    TH1D *hBTofMatched = new TH1D("hBTofMatched","Number of TOF-matched tracks;bTofMatched;Entries",
+	   	hBTofMatched = new TH1D("hBTofMatched","Number of TOF-matched tracks;bTofMatched;Entries",
 	                                  400, -0.5, 399.5);
-	    TH1D *hBemcMatched = new TH1D("hBemcMatched","Number of BEMC-matched tracks;bEmcMatched;Entries",
+	   	hBemcMatched = new TH1D("hBemcMatched","Number of BEMC-matched tracks;bEmcMatched;Entries",
 	                                  400, -0.5, 399.5);
-	    TH1D *hRanking = new TH1D("hRanking","Primary vertex ranking;Primary vertex ranking;Entries",
+	   	hRanking = new TH1D("hRanking","Primary vertex ranking;Primary vertex ranking;Entries",
 	                              21, -10.5, 10.5);
-	    TH2D *hVpdVzDiffVsVz = new TH2D("hVpdVzDiffVsVz","v_{z}(TPC) - v_{z}(VPD) vs. v_{z}(TPC);v_{z}(TPC);v_{z}(TPC) - v_{z}(VPD)",
+	    hVpdVzDiffVsVz = new TH2D("hVpdVzDiffVsVz","v_{z}(TPC) - v_{z}(VPD) vs. v_{z}(TPC);v_{z}(TPC);v_{z}(TPC) - v_{z}(VPD)",
 	                                    280, -70., 70., 80, -20., 20.);
-	    TH2D *hBTofTrayMultVsRefMult = new TH2D("hBTofTrayMultVsRefMult","TOF tray multiplicity vs. refMult;refMult;bTofTrayMult",
+	    hBTofTrayMultVsRefMult = new TH2D("hBTofTrayMultVsRefMult","TOF tray multiplicity vs. refMult;refMult;bTofTrayMult",
 	                                            600, -0.5, 599.5, 600, -0.5, 599.5);
-	    TH2D *hBTofMatchedVsRefMult = new TH2D("hBTofMatchedVsRefMult","TOF-matched tracks vs. refMult;refMult;TOF-matched",
+	    hBTofMatchedVsRefMult = new TH2D("hBTofMatchedVsRefMult","TOF-matched tracks vs. refMult;refMult;TOF-matched",
 	                                            600, -0.5, 599.5, 400, -0.5, 399.5);
-	    TH1D *hTransSphericity = new TH1D("hTransSphericity","Transverse sphericity;Sphericity;Entries",
+	   	hTransSphericity = new TH1D("hTransSphericity","Transverse sphericity;Sphericity;Entries",
 	                                      10, 0., 1.);
-	    TH1D *hTransSphericity2 = new TH1D("hTransSphericity2","Transverse sphericity in |#eta|<1;Sphericity;Entries",
+	   	hTransSphericity2 = new TH1D("hTransSphericity2","Transverse sphericity in |#eta|<1;Sphericity;Entries",
 	                                       10, 0., 1.);
-	    TH1D *hNumberOfVertices = new TH1D("hNumberOfVertices","Number of primary vertices;Number of primary vertices;Entries",
+	   	hNumberOfVertices = new TH1D("hNumberOfVertices","Number of primary vertices;Number of primary vertices;Entries",
 	                                       15, -0.5, 14.5);
-	    TProfile *hEventProfile[8];
+	    
 	    hEventProfile[0] = new TProfile("hEventProfile_0","Profile of refMult;Run ID;<refMult>",
 	                                    runIdBins, runIdRange[0], runIdRange[1] );
 	    hEventProfile[1] = new TProfile("hEventProfile_1","Profile of TOF tray multiplicity;Run ID;<bTofTrayMultiplicity>",
@@ -408,50 +426,50 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
 	      hEventProfile[iHist]->SetLineColor(mColor);  // black
 	    }
 
-	    // Track
-	    TH1D *hGlobalPtot = new TH1D("hGlobalPtot","Global track momentum;p (GeV/c);Entries",
+	    //*****Track*****// 
+	    hGlobalPtot = new TH1D("hGlobalPtot","Global track momentum;p (GeV/c);Entries",
 	                                 200, 0., 2. );
-	    TH1D *hPrimaryPtot = new TH1D("hPrimaryPtot","Primary track momentum;p (GeV/c);Entries",
+	    hPrimaryPtot = new TH1D("hPrimaryPtot","Primary track momentum;p (GeV/c);Entries",
 	                                  200, 0., 2. );
-	    TH1D *hGlobalPt = new TH1D("hGlobalPt","Global track transverse momentum;p_{T} (GeV/c)",
+	    hGlobalPt = new TH1D("hGlobalPt","Global track transverse momentum;p_{T} (GeV/c)",
 	                                200, 0., 2.);
-	    TH1D *hPrimaryPt = new TH1D("hPrimaryPt","Primary track transverse momentum;p_{T} (GeV/c)",
+	    hPrimaryPt = new TH1D("hPrimaryPt","Primary track transverse momentum;p_{T} (GeV/c)",
 	                                200, 0., 2.);
-	    TH1D *hNHits = new TH1D("hNHits","Number of hits;nHits;Entries", 80, -0.5, 79.5);
-	    TH1D *hNHitsRatio = new TH1D("hNHitsRatio","nHitsFit to nHitsPoss ratio;nHitsFit/nHitsRatio;Entries",
+	    hNHits = new TH1D("hNHits","Number of hits;nHits;Entries", 80, -0.5, 79.5);
+	    hNHitsRatio = new TH1D("hNHitsRatio","nHitsFit to nHitsPoss ratio;nHitsFit/nHitsRatio;Entries",
 	                                 10, 0., 1. );
-	    TH1D *hChi2 = new TH1D("hChi2","#chi^{2} of the track;#chi^{2};Entries",
+	    hChi2 = new TH1D("hChi2","#chi^{2} of the track;#chi^{2};Entries",
 	                           200, 0., 20.);
-	    TH1D *hDca = new TH1D("hDca","DCA to primary vertex;DCA (cm);Entries",
+	    hDca = new TH1D("hDca","DCA to primary vertex;DCA (cm);Entries",
 	                          100, 0., 10.);
-	    TH2D *hDcaVsPt = new TH2D("hDcaVsPt","charge*p_{T} vs. DCA;charge * p_{T} (GeV/c);DCA (cm)",
+	    hDcaVsPt = new TH2D("hDcaVsPt","charge*p_{T} vs. DCA;charge * p_{T} (GeV/c);DCA (cm)",
 	                              840, -2.1, 2.1, 100, 0., 10.);
-	    TH1D *hPhi = new TH1D("hPhi","Azimuthal angle distribution;#phi;Entries",
+	    hPhi = new TH1D("hPhi","Azimuthal angle distribution;#phi;Entries",
 	                          640, -3.2, 3.2 );
-	    TH1D *hEta = new TH1D("hEta","Track pseudorapidity;#eta;Entries", 220, -1.1, 1.1 );
-	    TH1D *hEtaG = new TH1D("hEtaG","Track pseudorapidity of global track;#eta;Entires", 220, -1., 1. );
-	    TH2D *hPtVsEta = new TH2D("hPtVsEta","p_{T} vs. #eta of primary track;#eta;p_{T} (GeV/c)",
+	    hEta = new TH1D("hEta","Track pseudorapidity;#eta;Entries", 220, -1.1, 1.1 );
+	    hEtaG = new TH1D("hEtaG","Track pseudorapidity of global track;#eta;Entires", 220, -1., 1. );
+	    hPtVsEta = new TH2D("hPtVsEta","p_{T} vs. #eta of primary track;#eta;p_{T} (GeV/c)",
 	                              220, -1.1, 1.1, 80, 0.05, 2.05);
-	    TH2D *hPrimaryPhiVsPt[2];
+
 	    for(Int_t i=0; i<2; i++) {
 	      hPrimaryPhiVsPt[i] = new TH2D(Form("hPrimaryPhiVsPt_%d",i),
 	           Form("#phi vs. p_{T} for charge: %d;p_{T} (GeV/c);#phi (rad)", (i==0) ? 1 : -1),
 	           300, 0., 3., 630, -3.15, 3.15 );
 	    }
-	    TH1D* hDedx = new TH1D("hDedx","dE/dx;dE/dx (keV/cm);Entries",
+
+	    hDedx = new TH1D("hDedx","dE/dx;dE/dx (keV/cm);Entries",
 	                           125, 0., 12.5);
-	    TH2D *hDedxVsPt = new TH2D("hDedxVsPt", "dE/dx vs. charge*p_{T};charge * p_{T} (GeV/c);dE/dx (keV/cm)",
+	    hDedxVsPt = new TH2D("hDedxVsPt", "dE/dx vs. charge*p_{T};charge * p_{T} (GeV/c);dE/dx (keV/cm)",
 	                               840, -2.1, 2.1, 600, 0., 12.);
-	    TH2D *hNSigmaPionVsPt = new TH2D("hNSigmaPionVsPt","n#sigma(#pi) vs. charge*p_{T};charge * p_{T} (GeV/c);n#sigma(#pi)",
+	    hNSigmaPionVsPt = new TH2D("hNSigmaPionVsPt","n#sigma(#pi) vs. charge*p_{T};charge * p_{T} (GeV/c);n#sigma(#pi)",
 	                                     840, -2.1, 2.1, 200, -10., 10.);
-	    TH2D *hNSigmaElectronVsPt = new TH2D("hNSigmaElectronVsPt","n#sigma(e) vs. charge*p_{T};charge * p_{T} (GeV/c);n#sigma(e)",
+	    hNSigmaElectronVsPt = new TH2D("hNSigmaElectronVsPt","n#sigma(e) vs. charge*p_{T};charge * p_{T} (GeV/c);n#sigma(e)",
 	                                         840, -2.1, 2.1, 200, -10., 10.);
-	    TH2D *hNSigmaKaonVsPt = new TH2D("hNSigmaKaonVsPt","n#sigma(K) vs. charge*p_{T};charge * p_{T} (GeV/c);n#sigma(K)",
+	    hNSigmaKaonVsPt = new TH2D("hNSigmaKaonVsPt","n#sigma(K) vs. charge*p_{T};charge * p_{T} (GeV/c);n#sigma(K)",
 	                                     840, -2.1, 2.1, 200, -10., 10.);
-	    TH2D *hNSigmaProtonVsPt = new TH2D("hNSigmaProtonVsPt","n#sigma(p) vs. charge*p_{T};charge * p_{T} (GeV/c);n#sigma(p)",
+	    hNSigmaProtonVsPt = new TH2D("hNSigmaProtonVsPt","n#sigma(p) vs. charge*p_{T};charge * p_{T} (GeV/c);n#sigma(p)",
 	                                       840, -2.1, 2.1, 200, -10., 10.);
 
-	    TH2D *hDedxVsPtPID[4];
 	    for ( Int_t i=0; i<4; i++ ) {
 	      TString name = "hDedxVsPtPID_";
 	      name += i;
@@ -468,29 +486,6 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
 	                                 840, -2.1, 2.1, 600, 0., 12.);
 	    }
 
-	    // TofPidTrait
-	    TH1D *hTofBeta = new TH1D("hTofBeta","BTofPidTraits #beta;#beta",
-	                              2000, 0., 2.);
-	    TH2D *hInvBetaVsPt = new TH2D("hInvBetaVsPt","1/#beta vs. charge*p_{T};charge * p_{T} (GeV/c);1/#beta",
-	                                  840, -2.1, 2.1, 200, 0.8, 2.8);
-	    TH1D *hMassSqr = new TH1D("hMassSqr","m^{2};m^{2} (GeV/c^{2})^{2};dN/dm^{2} (entries)",
-	                              520, -0.1, 5.1 );
-	    TH2D *hMassSqrVsPt = new TH2D("hMassSqrVsPt","m^{2} vs. charge*p_{T};charge * p_{T} (GeV/c);m^{2} (GeV/c^{2})^{2}",
-	                                  840, -2.1, 2.1, 200, -0.2, 1.8);
-	    TH2D *hDedxVsMassSqr[2];
-	    hDedxVsMassSqr[0] = new TH2D("hDedxVsMassSqr_0","dE/dx vs. mass^{2} charge>0;m^{2} (GeV/c^{2})^{2};dE/dx (keV/cm)",
-	               440, -0.4, 1.8, 250, 0., 12.5 );
-	    hDedxVsMassSqr[1] = new TH2D("hDedxVsMassSqr_1","dE/dx vs. mass^{2} charge<0;m^{2} (GeV/c^{2})^{2};dE/dx (keV/cm)",
-	               440, -0.4, 1.8, 250, 0., 12.5 );
-	    TH2D *hInvBetaDiffElectronVsPt = new TH2D("hInvBetaDiffElectronVsPt","1/#beta - 1/#beta(electron) vs. charge*p_{T};charge * p_{T} (GeV/c);1/#beta - 1/#beta(e)",
-	                                              840, -2.1, 2.1, 200, -0.1, 0.1);
-	    TH2D *hInvBetaDiffPionVsPt = new TH2D("hInvBetaDiffPionVsPt","1/#beta - 1/#beta(pion) vs. charge*p_{T};charge * p_{T} (GeV/c);1/#beta - 1/#beta(#pi)",
-	                                              840, -2.1, 2.1, 200, -0.1, 0.1);
-	    TH2D *hInvBetaDiffKaonVsPt = new TH2D("hInvBetaDiffKaonVsPt","1/#beta - 1/#beta(kaon) vs. charge*p_{T};charge * p_{T} (GeV/c);1/#beta - 1/#beta(K)",
-	                                              840, -2.1, 2.1, 200, -0.1, 0.1);
-	    TH2D *hInvBetaDiffProtonVsPt = new TH2D("hInvBetaDiffProtonVsPt","1/#beta - 1/#beta(p) vs. charge*p_{T};charge * p_{T} (GeV/c);1/#beta - 1/#beta(p)",
-	                                            840, -2.1, 2.1, 200, -0.1, 0.1);
-	    TProfile *hTrackProfile[6];
 	    hTrackProfile[0] = new TProfile("hTrackProfile_0","Profile of track #phi;Run ID;<#phi>",
 	                                             runIdBins, runIdRange[0], runIdRange[1] );
 	    hTrackProfile[1] = new TProfile("hTrackProfile_1","Profile of track p_{T};Run ID;<p_{T}>",
@@ -512,15 +507,39 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
 	      hTrackProfile[iTrk]->SetLineWidth(2);
 	      hTrackProfile[iTrk]->SetLineColor(mColor);  // black
 	    }
-  	}// Histogramms for QA mode
 
-  	// TProfiles for raw mode
+	    //*****TofPidTrait*****//
+	    hTofBeta = new TH1D("hTofBeta","BTofPidTraits #beta;#beta",
+	                              2000, 0., 2.);
+	    hInvBetaVsPt = new TH2D("hInvBetaVsPt","1/#beta vs. charge*p_{T};charge * p_{T} (GeV/c);1/#beta",
+	                                  840, -2.1, 2.1, 200, 0.8, 2.8);
+	    hMassSqr = new TH1D("hMassSqr","m^{2};m^{2} (GeV/c^{2})^{2};dN/dm^{2} (entries)",
+	                              520, -0.1, 5.1 );
+	    hMassSqrVsPt = new TH2D("hMassSqrVsPt","m^{2} vs. charge*p_{T};charge * p_{T} (GeV/c);m^{2} (GeV/c^{2})^{2}",
+	                                  840, -2.1, 2.1, 200, -0.2, 1.8);
+	    hDedxVsMassSqr[0] = new TH2D("hDedxVsMassSqr_0","dE/dx vs. mass^{2} charge>0;m^{2} (GeV/c^{2})^{2};dE/dx (keV/cm)",
+	               440, -0.4, 1.8, 250, 0., 12.5 );
+	    hDedxVsMassSqr[1] = new TH2D("hDedxVsMassSqr_1","dE/dx vs. mass^{2} charge<0;m^{2} (GeV/c^{2})^{2};dE/dx (keV/cm)",
+	               440, -0.4, 1.8, 250, 0., 12.5 );
+	    hInvBetaDiffElectronVsPt = new TH2D("hInvBetaDiffElectronVsPt","1/#beta - 1/#beta(electron) vs. charge*p_{T};charge * p_{T} (GeV/c);1/#beta - 1/#beta(e)",
+	                                              840, -2.1, 2.1, 200, -0.1, 0.1);
+	    hInvBetaDiffPionVsPt = new TH2D("hInvBetaDiffPionVsPt","1/#beta - 1/#beta(pion) vs. charge*p_{T};charge * p_{T} (GeV/c);1/#beta - 1/#beta(#pi)",
+	                                              840, -2.1, 2.1, 200, -0.1, 0.1);
+	    hInvBetaDiffKaonVsPt = new TH2D("hInvBetaDiffKaonVsPt","1/#beta - 1/#beta(kaon) vs. charge*p_{T};charge * p_{T} (GeV/c);1/#beta - 1/#beta(K)",
+	                                              840, -2.1, 2.1, 200, -0.1, 0.1);
+	    hInvBetaDiffProtonVsPt = new TH2D("hInvBetaDiffProtonVsPt","1/#beta - 1/#beta(p) vs. charge*p_{T};charge * p_{T} (GeV/c);1/#beta - 1/#beta(p)",
+	                                            840, -2.1, 2.1, 200, -0.1, 0.1);
+
+  	}// if( strncmp(mode, "QA",2)==0 )
+
+
+  	//***************PROFILES FOR RAW MODE***************//
+	TProfile2D *tp_Qx1[2][2], *tp_Qy1[2][2];
+	TProfile2D *tp_Qx2[2][n], *tp_Qx3[2][n], *tp_Qy2[2][n], *tp_Qy3[2][n];
+
   	if( strncmp(mode, "raw",3)==0 ) {
-  		//TProfile2D for recentering
-	    TProfile2D *tp_Qx1[2][2], *tp_Qy1[2][2];
-	    TProfile2D *tp_Qx2[2][n], *tp_Qx3[2][n], *tp_Qy2[2][n], *tp_Qy3[2][n];
 
-	    // loop by direction 
+  		// loop by direction 
 	    for(Int_t l = 0; l < 2; l++) {
 	      // loop by eta-gap of TPC + BBC and ZDC
 	      for(Int_t i = 0; i < n; i++) {
@@ -549,17 +568,21 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
 	        Form("<Q_{y}> for #psi_{1} %s %s;RunID;cent",direction[l],gap[det+6]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
 	      }
 	    }// loop by direction
-  	}// TProfiles for raw mode
 
-  	// TProfiles for rec mode
+  	}// if( strncmp(mode, "raw",3)==0 )
+
+
+  	//***************PROFILES FOR RECENTERING MODE***************//
+  	TProfile2D *tp_sinPsi1[2][2][20], *tp_cosPsi1[2][2][20];
+	TProfile2D *tp_sinPsi2[2][n][4], *tp_cosPsi2[2][n][4], *tp_sinPsi3[2][n][4], *tp_cosPsi3[2][n][4];
+
   	if( strncmp(mode, "rec",3)==0 ) { 
 
-	    TProfile2D *tp_sinPsi1[2][2][20], *tp_cosPsi1[2][2][20];
-	    TProfile2D *tp_sinPsi2[2][n][4], *tp_cosPsi2[2][n][4], *tp_sinPsi3[2][n][4], *tp_cosPsi3[2][n][4];
 	    for(Int_t l = 0; l < 2; l++) {
+
 	      for(Int_t i = 0; i < n; i++) {
 	        for(Int_t j = 0; j < 4; j++) {
-	          //TProfile2D for flattening 
+	          
 	          tp_sinPsi2[l][i][j] = new TProfile2D(Form("tp_%isinPsi2%s%s",j+1,direction[l],ngap[i]),
 	          Form("<sin(%i*2#psi_{2})> %s %s",j+1,direction[l],gap[i]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
 
@@ -574,9 +597,10 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
 
 	        }
 	      }
+
 	      for(Int_t det = 0; det < 2; det++) {
 	        for(Int_t j = 0; j < 20; j++) {
-	          //TProfile2D for flattening 
+	          
 	          tp_sinPsi1[l][det][j] = new TProfile2D(Form("tp_%isinPsi1%s%s",j+1,direction[l],ngap[det+6]),
 	          Form("<sin(%i*#psi_{1})> %s %s",j+1,direction[l],gap[det+6]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
 
@@ -584,127 +608,140 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
 	          Form("<cos(%i*#psi_{1})> %s %s",j+1,direction[l],gap[det+6]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
 	        }
 	      }
-	    }
-	}// TProfiles for rec mode
 
-	// TProfiles for flat mode
+	    }// for(Int_t l = 0; l < 2; l++)
+
+	}// if( strncmp(mode, "rec",3)==0 )
+
+
+	//***************PROFILES FOR FLATTENING AND FLOW MODE***************//
+	Int_t n_sys=3; 
+	// 0 - VtZ 
+	// 1 - nHits
+	// 2 - DCA
+	//*****Resolution^2 for Psi1*****//
+	TProfile *tp_SqRes1[2];
+	//*****Resolution^2 for Psi2 and Psi3*****// 
+	TProfile *tp_SqRes2[n], *tp_SqRes3[n];
+	//*****Flows*****//
+	TProfile *tp_v1[2][9];
+	TProfile *tp_v2cent[3][n-2], *tp_v3cent[3][n-2];
+	TProfile2D *tp_v2[3][n-2], *tp_v3[3][n-2];
+	TProfile2D *tp_v2PID[2][3][3][n-2], *tp_v3PID[2][3][3][n-2];
+	//*****Flows systematic*****//
+	TProfile2D *tp_v2_sys[3][n-2][3], *tp_v3_sys[3][n-2][3];
+	TProfile2D *tp_v2PID_sys[2][3][3][n-2][3], *tp_v3PID_sys[2][3][3][n-2][3];
+	//*****Mean pt for PID and hadrons*****//
+	TProfile2D *tp_meanPt_PID[2][3][3][n-2];
+	TProfile2D *tp_meanPt_PID_sys[2][3][3][n-2][3];
+	TProfile2D *tp_meanPt_hadrons[3][n-2];
+	TProfile2D *tp_meanPt_hadrons_sys[3][n-2][3];
+
 	if( strncmp(mode, "flow",4)==0 ) {
 
-		//TProfile for resolution for Psi1
-	    TProfile *tp_SqRes1[2];
-	    for(Int_t det = 0; det < 2; det++) {
-	      tp_SqRes1[det] = new TProfile(Form("tp_SqRes1%s",ngap[det+6]),Form("Resolution^{2} for v_{1} %s",gap[det+6]),9,0,9);
+		for(Int_t det = 0; det < 2; det++) {
+	  	tp_SqRes1[det] = new TProfile(Form("tp_SqRes1%s",ngap[det+6]),Form("Resolution^{2} for v_{1} %s",gap[det+6]),9,0,9);
+	  }
+
+	  for(Int_t i = 0; i < n; i++) {
+	    tp_SqRes2[i] = new TProfile(Form("tp_SqRes2%s",ngap[i]),Form("Resolution^{2} for v_{2} %s",gap[i]),9,0,9);
+	    tp_SqRes3[i] = new TProfile(Form("tp_SqRes3%s",ngap[i]),Form("Resolution^{2} for v_{3} %s",gap[i]),9,0,9);
+	  }
+
+	  for(Int_t det = 0; det < 2; det++) {
+	  	for(Int_t j = 0; j < c; j++) {
+	  		tp_v1[det][j] = new TProfile( Form( "tp_v1%scent%i",detector[det+1],j), 
+	                                   	Form( "v_{1} of pseudorapidity cent %i by %s",j,detector[det+1]),20,-1,1);
 	    }
+	  }
 
-	    //TProfile for resolution for Psi2 and Psi3 
-	    TProfile *tp_SqRes2[n], *tp_SqRes3[n];
-	    for(Int_t i = 0; i < n; i++) {
-	      tp_SqRes2[i] = new TProfile(Form("tp_SqRes2%s",ngap[i]),Form("Resolution^{2} for v_{2} %s",gap[i]),9,0,9);
-	      tp_SqRes3[i] = new TProfile(Form("tp_SqRes3%s",ngap[i]),Form("Resolution^{2} for v_{3} %s",gap[i]),9,0,9);
-	    }
+	  for(Int_t i = 0; i < n-2; i++) {
+	   	for(Int_t j = 0; j < 3; j++) {
 
-	    Int_t n_sys=3;
-	    // 0 - VtZ
-	    // 1 - nHits
-	    // 2 - DCA
-	    
-	    TProfile *tp_v1[2][9];
-	    TProfile *tp_v2cent[3][n-2], *tp_v3cent[3][n-2];
-	    TProfile2D *tp_v2[3][n-2], *tp_v3[3][n-2];
-	    TProfile2D *tp_v2_sys[3][n-2][3], *tp_v3_sys[3][n-2][3];
-	    TProfile2D *tp_v2PID[2][3][3][n-2], *tp_v3PID[2][3][3][n-2];
-	    TProfile2D *tp_v2PID_sys[2][3][3][n-2][3], *tp_v3PID_sys[2][3][3][n-2][3];
-	    //TProfile for mean pt for PID and hadrons
-	    TProfile2D *tp_meanPt_PID[2][3][3][n-2];
-	    TProfile2D *tp_meanPt_PID_sys[2][3][3][n-2][3];
-	    TProfile2D *tp_meanPt_hadrons[3][n-2];
-	    TProfile2D *tp_meanPt_hadrons_sys[3][n-2][3];
+	   		tp_v2cent[j][i] = new TProfile(Form("tp_v2cent%s%s",detector[j],ngap[i]),
+	                            Form("v_{2} of cent %s by %s;cent;v_{2}",gap[i],detector[j]),9,0,9);
+	      tp_v3cent[j][i] = new TProfile(Form("tp_v3cent%s%s",detector[j],ngap[i]),
+	                            Form("v_{3} of cent %s by %s;cent;v_{3}",gap[i],detector[j]),9,0,9);
+	      tp_v2[j][i] = new TProfile2D(Form("tp_v2_hadrons%s%s",detector[j],ngap[i]),
+	                        Form("v_{2} of p_{t} and cent %s by %s;p_{t} [GeV/c];cent",gap[i],detector[j]),30,0.2,3.2,9,0,9);
+	      tp_v3[j][i] = new TProfile2D(Form("tp_v3_hadrons%s%s",detector[j],ngap[i]),
+	                        Form("v_{3} of p_{t} and cent %s by %s;p_{t} [GeV/c];cent",gap[i],detector[j]),30,0.2,3.2,9,0,9);
+	      tp_meanPt_hadrons[j][i] = new TProfile2D(Form("tp_meanPt_hadrons%s%s",detector[j],ngap[i]),
+	      Form("Mean p_{t} for bins v_{2} #Delta#eta-gap=%s %s; bin; p_{t} [GeV/c]",gap[i],detector[j]),30,0.2,3.2,9,0,9);
 
-	    for(Int_t det = 0; det < 2; det++) {
-	      for(Int_t j = 0; j < c; j++) {
-	        tp_v1[det][j] = new TProfile( Form( "tp_v1%scent%i",detector[det+1],j), 
-	                                 Form( "v_{1} of pseudorapidity cent %i by %s",j,detector[det+1]),20,-1,1);
+	      if(i < 3 && j==0){
+	      	for(Int_t nsys = 0; nsys < 3; nsys++){
+	            
+	        	tp_v2_sys[j][i][nsys] = new TProfile2D(Form("tp_v2_hadrons%s%s%s",detector[j],ngap[i], systematic[nsys]),
+	          Form("v_{2} of p_{t} and cent %s by %s Systematic:%s;p_{t} [GeV/c];cent",gap[i],detector[j], systematic[nsys]),30,0.2,3.2,9,0,9);
+	            
+	          tp_v3_sys[j][i][nsys] = new TProfile2D(Form("tp_v3_hadrons%s%s%s",detector[j],ngap[i],systematic[nsys]),
+	          Form("v_{3} of p_{t} and cent %s by %s Systematic:%s;p_{t} [GeV/c];cent",gap[i],detector[j],systematic[nsys]),30,0.2,3.2,9,0,9);
+	            
+	          tp_meanPt_hadrons_sys[j][i][nsys] = new TProfile2D(Form("tp_meanPt_hadrons%s%s%s",detector[j],ngap[i],systematic[nsys]),
+	          Form("Mean p_{t} for bins v_{2} #Delta#eta-gap=%s %s Systematic:%s; bin; p_{t} [GeV/c]",gap[i],detector[j],systematic[nsys]),30,0.2,3.2,9,0,9);
+	        }
 	      }
-	    }
 
-	    for(Int_t i = 0; i < n-2; i++) {
-	      for(Int_t j = 0; j < 3; j++) {
-	        tp_v2cent[j][i] = new TProfile(Form("tp_v2cent%s%s",detector[j],ngap[i]),
-	                              Form("v_{2} of cent %s by %s;cent;v_{2}",gap[i],detector[j]),9,0,9);
-	        tp_v3cent[j][i] = new TProfile(Form("tp_v3cent%s%s",detector[j],ngap[i]),
-	                              Form("v_{3} of cent %s by %s;cent;v_{3}",gap[i],detector[j]),9,0,9);
-	        tp_v2[j][i] = new TProfile2D(Form("tp_v2_hadrons%s%s",detector[j],ngap[i]),
-	                          Form("v_{2} of p_{t} and cent %s by %s;p_{t} [GeV/c];cent",gap[i],detector[j]),30,0.2,3.2,9,0,9);
-	        tp_v3[j][i] = new TProfile2D(Form("tp_v3_hadrons%s%s",detector[j],ngap[i]),
-	                          Form("v_{3} of p_{t} and cent %s by %s;p_{t} [GeV/c];cent",gap[i],detector[j]),30,0.2,3.2,9,0,9);
-	        tp_meanPt_hadrons[j][i] = new TProfile(Form("tp_meanPt_hadrons%s%s",detector[j],ngap[i]),
-	                          Form("Mean p_{t} for bins v_{2} #Delta#eta-gap=%s %s; bin; p_{t} [GeV/c]",gap[i],detector[j]),30,0.2,3.2,9,0,9);
-
-	        if(i < 3 && j==0){
-	          for(Int_t nsys = 0; nsys < 3; nsys++){
+	      Int_t part = 0;
+	      for(Int_t k = 0; k < 3; k++) {
+	        for(Int_t l = 0; l < 2; l++) {
+	          tp_v2PID[l][k][j][i] = new TProfile2D( Form("tp_v2_%s%s%s%s",particles[k],sign[l],detector[j],ngap[i]), 
+	          Form("v_{2} for %s of p_{t} and cent %s by %s;p_{t} [GeV/c];cent",partLateX[part],gap[i],detector[j]),30,0.2,3.2,9,0,9);
+	          
+	          tp_v3PID[l][k][j][i] = new TProfile2D( Form("tp_v3_%s%s%s%s",particles[k],sign[l],detector[j],ngap[i]), 
+	          Form("v_{3} for %s of p_{t} and cent %s by %s;p_{t} [GeV/c];cent",partLateX[part],gap[i],detector[j]),30,0.2,3.2,9,0,9);
+	          
+	          tp_meanPt_PID[l][k][j][i] = new TProfile2D(Form("tp_meanPt_%s%s%s%s",particles[k],sign[l],detector[j],ngap[i]),
+	          Form("Mean p_{t} for %s of p_{t} and cent %s by %s;p_{t} [GeV/c];cent",particles[k],sign[l],detector[j],ngap[i]), 30,0.2,3.2,9,0,9);
 	            
-	            tp_v2_sys[j][i][nsys] = new TProfile2D(Form("tp_v2_hadrons%s%s%s",detector[j],ngap[i], systematic[nsys]),
-	                              Form("v_{2} of p_{t} and cent %s by %s Systematic:%s;p_{t} [GeV/c];cent",gap[i],detector[j], systematic[nsys]),30,0.2,3.2,9,0,9);
-	            tp_v3_sys[j][i][nsys] = new TProfile2D(Form("tp_v3_hadrons%s%s%s",detector[j],ngap[i],systematic[nsys]),
-	                              Form("v_{3} of p_{t} and cent %s by %s Systematic:%s;p_{t} [GeV/c];cent",gap[i],detector[j],systematic[nsys]),30,0.2,3.2,9,0,9);
-	            tp_meanPt_hadrons_sys[j][i][nsys] = new TProfile(Form("tp_meanPt_hadrons%s%s%s",detector[j],ngap[i],systematic[nsys]),
-	                          Form("Mean p_{t} for bins v_{2} #Delta#eta-gap=%s %s Systematic:%s; bin; p_{t} [GeV/c]",gap[i],detector[j],systematic[nsys]),30,0.2,3.2,9,0,9);
-	          }
-	        }
-
-	        Int_t part = 0;
-	        for(Int_t k = 0; k < 3; k++) {
-	          for(Int_t l = 0; l < 2; l++) {
-	            tp_v2PID[l][k][j][i] = new TProfile2D( Form("tp_v2_%s%s%s%s",particles[k],sign[l],detector[j],ngap[i]), 
-	              Form("v_{2} for %s of p_{t} and cent %s by %s;p_{t} [GeV/c];cent",partLateX[part],gap[i],detector[j]),30,0.2,3.2,9,0,9);
-	            tp_v3PID[l][k][j][i] = new TProfile2D( Form("tp_v3_%s%s%s%s",particles[k],sign[l],detector[j],ngap[i]), 
-	              Form("v_{3} for %s of p_{t} and cent %s by %s;p_{t} [GeV/c];cent",partLateX[part],gap[i],detector[j]),30,0.2,3.2,9,0,9);
-	            tp_meanPt_PID[l][k][j][i] = new TProfile(Form("tp_meanPt_%s%s%s%s",particles[k],sign[l],detector[j],ngap[i]),
-	              Form("Mean p_{t} for %s of p_{t} and cent %s by %s;p_{t} [GeV/c];cent",particles[k],sign[l],detector[j],ngap[i]), 30,0.2,3.2,9,0,9);
-	            
-	            if(i < 3 && j==0){
-	              for(Int_t nsys = 0; nsys < 3; nsys++){
-	                tp_v2PID_sys[l][k][j][i][nsys] = new TProfile2D( Form("tp_v2_%s%s%s%s%s",particles[k],sign[l],detector[j],ngap[i], systematic[nsys]), 
-	                  Form("v_{2} for %s of p_{t} and cent %s by %s Systematic: %s;p_{t} [GeV/c];cent",partLateX[part],gap[i],detector[j], systematic[nsys]),30,0.2,3.2,9,0,9);
-	                tp_v3PID_sys[l][k][j][i][nsys] = new TProfile2D( Form("tp_v3_%s%s%s%s%s",particles[k],sign[l],detector[j],ngap[i], systematic[nsys]), 
-	                  Form("v_{3} for %s of p_{t} and cent %s by %s Systematic: %s;p_{t} [GeV/c];cent",partLateX[part],gap[i],detector[j], systematic[nsys]),30,0.2,3.2,9,0,9);
-	                tp_meanPt_PID_sys[l][k][j][i][nsys] = new TProfile(Form("tp_meanPt_%s%s%s%s%s",particles[k],sign[l],detector[j],ngap[i], systematic[nsys]),
-	                  Form("Mean p_{t} for %s of p_{t} and cent %s by %s Systematic: %s;p_{t} [GeV/c];cent",particles[k],sign[l],detector[j],ngap[i],systematic[nsys]),,30,0.2,3.2,9,0,9);
-	              }
+	          if(i < 3 && j==0){
+	            for(Int_t nsys = 0; nsys < 3; nsys++){
+	            	tp_v2PID_sys[l][k][j][i][nsys] = new TProfile2D( Form("tp_v2_%s%s%s%s%s",particles[k],sign[l],detector[j],ngap[i], systematic[nsys]), 
+	              Form("v_{2} for %s of p_{t} and cent %s by %s Systematic: %s;p_{t} [GeV/c];cent",partLateX[part],gap[i],detector[j], systematic[nsys]),30,0.2,3.2,9,0,9);
+	                
+	              tp_v3PID_sys[l][k][j][i][nsys] = new TProfile2D( Form("tp_v3_%s%s%s%s%s",particles[k],sign[l],detector[j],ngap[i], systematic[nsys]), 
+	              Form("v_{3} for %s of p_{t} and cent %s by %s Systematic: %s;p_{t} [GeV/c];cent",partLateX[part],gap[i],detector[j], systematic[nsys]),30,0.2,3.2,9,0,9);
+	                
+	              tp_meanPt_PID_sys[l][k][j][i][nsys] = new TProfile2D(Form("tp_meanPt_%s%s%s%s%s",particles[k],sign[l],detector[j],ngap[i], systematic[nsys]),
+	              Form("Mean p_{t} for %s of p_{t} and cent %s by %s Systematic: %s;p_{t} [GeV/c];cent",particles[k],sign[l],detector[j],ngap[i],systematic[nsys]),30,0.2,3.2,9,0,9);
 	            }
-	            part++;
 	          }
-	        }
-	      } //for(Int_t i = 0; i < n; i++)
-	    } //for(Int_t j = 0; j < 3; j++)
+	          part++;
 
-	}// TProfiles for flat mode
+	        }// for(Int_t l = 0; l < 2; l++)
+	      }// for(Int_t k = 0; k < 3; k++)
+
+	    }// for(Int_t j = 0; j < 3; j++) 
+	 	}// for(Int_t i = 0; i < n-2; i++)
+
+	}// if( strncmp(mode, "flow",4)==0 )
 
   
-  	// RunQA
-  	std::vector<Int_t> BadRuns;
-  	if(useRunQA == true) {
-  		Int_t buff = 0;
-    	BadRuns.reserve(1000);
-    	ifstream BadRunList(Form("/mnt/pool/1/aspovarov/basov/test/Bad_Run_%s.txt", energy));
-    	while( !BadRunList.eof() ) {
-        	BadRunList >> buff;
-        	BadRuns.push_back( buff );
-    	}
-  		std::cout << "BadRunLists yep" << std::endl;
+  // RunQA
+  std::vector<Int_t> BadRuns;
+  if(useRunQA == true) {
+  	Int_t buff = 0;
+    BadRuns.reserve(1000);
+    ifstream BadRunList(Form("/mnt/pool/1/aspovarov/basov/test/Bad_Run_%s.txt", energy));
+    while( !BadRunList.eof() ) {
+    	BadRunList >> buff;
+      BadRuns.push_back( buff );
+    }
+  std::cout << "BadRunLists yep" << std::endl;
 	}//RunQA
 
 	//loop by event
 	for(Long64_t iEvent=0; iEvent<events2read; iEvent++) {
 
   	if ( iEvent % 10000 == 0) {
-        std::cout << "Working on event #[" << (iEvent+1)
+  		std::cout << "Working on event #[" << (iEvent+1)
      	      	  << "/" << events2read << "]" << std::endl;
     }
 
     if (iEvent == events2read-1) {
-        std::cout << "Working on event #[" << (events2read)
-     	 	      << "/" << events2read << "]" << std::endl;
+    	std::cout << "Working on event #[" << (events2read)
+     	 	      	<< "/" << events2read << "]" << std::endl;
     }
 	
 		Bool_t readEvent = femtoReader->readFemtoEvent(iEvent);
@@ -719,8 +756,8 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
     // Retrieve event information
    	StFemtoEvent *event = dst->event();
     if( !event ) {
-        std::cout << "Something went wrong, Master! Event is hiding from me..." << std::endl;
-      	break;
+    	std::cout << "Something went wrong, Master! Event is hiding from me..." << std::endl;
+      break;
     }
 
     // Simple event cut
