@@ -59,7 +59,7 @@ Bool_t isGoodTrack(StFemtoEvent *event, StFemtoTrack *femtoTrack, Double_t DCA_E
 Bool_t isGoodTrackFlow(StFemtoEvent *event, StFemtoTrack *femtoTrack, Double_t DCA_FLOW);
 
 // Calculate Q-vector by TPC
-Bool_t CalculateTPCQVec( TVector2 Q2vec[][n], TVector2 Q3vec[][n], StFemtoDst *dst,Int_t ngap, Double_t DCA_EVENT);
+void CalculateTPCQVec( TVector2 Q2vec[][n], TVector2 Q3vec[][n], StFemtoDst *dst,Int_t ngap, Double_t DCA_EVENT);
 
 // Calculate Q-vector by ZDC
 Float_t ZDCSMD(Int_t eastwest, Int_t verthori, Int_t strip, StFemtoEvent *event );
@@ -303,50 +303,53 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
   TH1D *h_Psi1[2][2][c],*h_Psi2[2][n][c], *h_Psi3[2][n][c];
   //histogram for check resolution
   TH1D *h_sinPsi2westTPCE[n][c], *h_cosPsi2westTPCE[n][c], *h_sinPsi3westTPCE[n][c], *h_cosPsi3westTPCE[n][c];
-    
-    // loop by direction
-    for(Int_t l = 0; l < 2; l++) {
-      //loop by cent                                                                                                  
-      for(Int_t j = 0; j < c; j++) {
-        //loop by eta-gap + BBC and ZDC
-        for(Int_t i = 0; i < n; i++) {
 
-          //historam of Q-vectors for east eta-gap 
-          h_Qx2[l][i][j] = new TH1D(Form("h_Qx2%s%scent%i",direction[l],ngap[i],j),
-              Form("Q_{x} for #psi_{2} %s %s cent %i;Q_{x}",direction[l],gap[i],j),300,-1.5,1.5);
-          h_Qy2[l][i][j] = new TH1D(Form("h_Qy2%s%scent%i",direction[l],ngap[i],j),
-              Form("Q_{y} for #psi_{2} %s %s cent %i;Q_{y}",direction[l],gap[i],j),300,-1.5,1.5);
-          h_Qx3[l][i][j] = new TH1D(Form("h_Qx3%s%scent%i",direction[l],ngap[i],j),
-              Form("Q_{x} for #psi_{3} %s %s cent %i;Q_{x}",direction[l],gap[i],j),300,-1.5,1.5);
-          h_Qy3[l][i][j] = new TH1D(Form("h_Qy3%s%scent%i",direction[l],ngap[i],j),
-              Form("Q_{y} for #psi_{3} %s %s cent %i;Q_{y}",direction[l],gap[i],j),300,-1.5,1.5);
-                
-          //historam of event planes for east eta-gap 
-          h_Psi2[l][i][j] = new TH1D(Form("h_Psi2%s%scent%i",direction[l],ngap[i],j),
-              Form("#psi_{2} %s %s cent %i;#psi_{2}",direction[l],gap[i],j),100,-0.05,3.2); 
-          h_Psi3[l][i][j] = new TH1D(Form("h_Psi3%s%scent%i",direction[l],ngap[i],j),
-              Form("#psi_{3} %s %s cent %i;#psi_{3}",direction[l],gap[i],j),100,-0.05,2.15);
-        }// loop by n
+    if( strncmp(mode, "QA",2) != 0 ) {
+	    // loop by direction
+	    for(Int_t l = 0; l < 2; l++) {
+	      //loop by cent                                                                                                  
+	      for(Int_t j = 0; j < c; j++) {
+	        //loop by eta-gap + BBC and ZDC
+	        for(Int_t i = 0; i < n; i++) {
 
-        for(Int_t det = 0; det < 2; det++) {
-          h_Qx1[l][det][j] = new TH1D(Form("h_Qx1%s%scent%i",direction[l],ngap[det+6],j),
-            Form("Q_{x} for #psi_{1} %s %s cent %i;Q_{x}",direction[l],gap[det+6],j),300,-1.5,1.5);
-          h_Qy1[l][det][j] = new TH1D(Form("h_Qy1%s%scent%i",direction[l],ngap[det+6],j),
-            Form("Q_{y} for #psi_{1} %s %s cent %i;Q_{y}",direction[l],gap[det+6],j),300,-1.5,1.5);
+	          //historam of Q-vectors for east eta-gap 
+	          h_Qx2[l][i][j] = new TH1D(Form("h_Qx2%s%scent%i",direction[l],ngap[i],j),
+	              Form("Q_{x} for #psi_{2} %s %s cent %i;Q_{x}",direction[l],gap[i],j),300,-1.5,1.5);
+	          h_Qy2[l][i][j] = new TH1D(Form("h_Qy2%s%scent%i",direction[l],ngap[i],j),
+	              Form("Q_{y} for #psi_{2} %s %s cent %i;Q_{y}",direction[l],gap[i],j),300,-1.5,1.5);
+	          h_Qx3[l][i][j] = new TH1D(Form("h_Qx3%s%scent%i",direction[l],ngap[i],j),
+	              Form("Q_{x} for #psi_{3} %s %s cent %i;Q_{x}",direction[l],gap[i],j),300,-1.5,1.5);
+	          h_Qy3[l][i][j] = new TH1D(Form("h_Qy3%s%scent%i",direction[l],ngap[i],j),
+	              Form("Q_{y} for #psi_{3} %s %s cent %i;Q_{y}",direction[l],gap[i],j),300,-1.5,1.5);
+	                
+	          //historam of event planes for east eta-gap 
+	          h_Psi2[l][i][j] = new TH1D(Form("h_Psi2%s%scent%i",direction[l],ngap[i],j),
+	              Form("#psi_{2} %s %s cent %i;#psi_{2}",direction[l],gap[i],j),100,-0.05,3.2); 
+	          h_Psi3[l][i][j] = new TH1D(Form("h_Psi3%s%scent%i",direction[l],ngap[i],j),
+	              Form("#psi_{3} %s %s cent %i;#psi_{3}",direction[l],gap[i],j),100,-0.05,2.15);
+	        }// loop by n
 
-          h_Psi1[l][det][j] = new TH1D(Form("h_Psi1%s%scent%i",direction[l],ngap[det+6],j),
-              Form("#psi_{1} %s %s cent %i;#psi_{1}",direction[l],gap[det+6],j),200,-0.1,6.35);
-        }
+	        for(Int_t det = 0; det < 2; det++) {
+	          h_Qx1[l][det][j] = new TH1D(Form("h_Qx1%s%scent%i",direction[l],ngap[det+6],j),
+	            Form("Q_{x} for #psi_{1} %s %s cent %i;Q_{x}",direction[l],gap[det+6],j),300,-1.5,1.5);
+	          h_Qy1[l][det][j] = new TH1D(Form("h_Qy1%s%scent%i",direction[l],ngap[det+6],j),
+	            Form("Q_{y} for #psi_{1} %s %s cent %i;Q_{y}",direction[l],gap[det+6],j),300,-1.5,1.5);
 
-      }// loop by cent
-    }// loop by direstion
-  	
+	          h_Psi1[l][det][j] = new TH1D(Form("h_Psi1%s%scent%i",direction[l],ngap[det+6],j),
+	              Form("#psi_{1} %s %s cent %i;#psi_{1}",direction[l],gap[det+6],j),200,-0.1,6.35);
+	        }
+
+	      }// loop by cent
+	    }// loop by direstion
+	    
+	}// if( strncmp(mode, "QA",2) != 0 )
+
   	//***************HISTOGRMS AND PROFILES FOR QA MODE***************//
   	//*****Event*****//
   	TH1D *hRefMult, *hVtxZ, *hRefMult2, *hGRefMult, *hNumberOfPrimaries, *hNumberOfGlobals;
   	TH1D *hCent9, *hCent16, *hBTofHit, *hBTofMatched, *hBemcMatched, *hRanking;
   	TH1D *hTransSphericity, *hTransSphericity2, *hNumberOfVertices;
-  	TH2D *hVtxXvsY, *hVpdVzDiffVsVz, *hBTofTrayMultVsRefMult,
+  	TH2D *hVtxXvsY, *hVpdVzDiffVsVz, *hBTofTrayMultVsRefMult, *hBTofMatchedVsRefMult;
   	TProfile *hEventProfile[8];  
   	//*****Track*****// 
   	TH1D *hGlobalPtot, *hPrimaryPtot, *hGlobalPt, *hPrimaryPt, *hNHits, *hNHitsRatio;
@@ -357,10 +360,10 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
   	TProfile *hTrackProfile[6];
   	//*****TofPidTrait*****//
   	TH1D *hTofBeta, *hMassSqr;
-  	TH2D *hInvBetaVsPt, *hMassSqrVsPt, *hDedxVsMassSqr[2], 
+  	TH2D *hInvBetaVsPt, *hMassSqrVsPt, *hDedxVsMassSqr[2]; 
   	TH2D *hInvBetaDiffElectronVsPt, *hInvBetaDiffPionVsPt, *hInvBetaDiffKaonVsPt, *hInvBetaDiffProtonVsPt;
   	
-  	if( strncmp(mode, "QA",2)==0 ) {
+  	if( strncmp(mode, "QA",2) == 0 ) {
 		//*****Event*****//
 	   	hRefMult = new TH1D("hRefMult", "Reference multiplicity;RefMult;Entries",
 	                              600, -0.5, 599.5);
@@ -763,6 +766,8 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
     // Simple event cut
     if( !isGoodEvent( event, VtxZ, VtxR, delta_VtxY ) ) continue;
 
+    TVector3 pVtx = event->primaryVertex();
+
    	// Track analysis
     Int_t nTracks = dst->numberOfTracks();
             
@@ -950,7 +955,7 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
         Q2vec[dir][6] = CalculateBBCQVec(event, dir, 2.0);
         Q3vec[dir][6] = CalculateBBCQVec(event, dir, 3.0);
       }
-      badEvent = CalculateTPCQVec(Q2vec, Q3vec, dst, n-2, DCA_EVENT);
+      CalculateTPCQVec(Q2vec, Q3vec, dst, n-2, DCA_EVENT);
             
     	cent = event -> cent9();
     	RunID = event -> runId();
@@ -1044,7 +1049,7 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
         Q2vec[l][6] = CalculateBBCQVec(event, l, 2.0);
         Q3vec[l][6] = CalculateBBCQVec(event, l, 3.0);
       }
-      badEvent = CalculateTPCQVec(Q2vec, Q3vec, dst, n-2, DCA_EVENT);
+      CalculateTPCQVec(Q2vec, Q3vec, dst, n-2, DCA_EVENT);
              
       cent = (Double_t)(event -> cent9());
       RunID = event -> runId();
@@ -1173,7 +1178,7 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
         Q2vec[l][6] = CalculateBBCQVec(event, l, 2.0);
         Q3vec[l][6] = CalculateBBCQVec(event, l, 3.0);
       }
-      badEvent = CalculateTPCQVec(Q2vec, Q3vec, dst, n-2, DCA_EVENT);
+      CalculateTPCQVec(Q2vec, Q3vec, dst, n-2, DCA_EVENT);
 
       RunID = event -> runId();
       cent = event -> cent9();
