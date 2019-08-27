@@ -50,7 +50,7 @@
 R__LOAD_LIBRARY(/mnt/pool/rhic/1/nigmatkulov/soft/StFemtoEvent/libStFemtoDst)
 #endif
 
-const Int_t n = 8;    // eta-gap by TPC + BBC and ZDC
+const Int_t n = 6;	// eta-gap by TPC 
 
 // Forward declarations
 // Check event and track
@@ -71,8 +71,8 @@ TVector2 CalculateBBCQVec(StFemtoEvent *event, Int_t ew, Float_t harm);
 Float_t GetBBCTilePhi(const Int_t e_w, const Int_t iTile);
 
 // Recentering for TPC, BBC, ZDC
-void Recentering( TVector2 Q1vec[][2], TVector2 Q2vec[][n], TVector2 Q3vec[][n], Int_t RunID, Int_t cent,TProfile2D *tpQx1[][2],
-TProfile2D *tpQy1[][2],TProfile2D *tpQx2[][n],TProfile2D *tpQy2[][n],TProfile2D *tpQx3[][n],TProfile2D *tpQy3[][n] );
+void Recentering( TVector2 Q1vec[][3], TVector2 Q2vec[][n], TVector2 Q3vec[][n], Int_t RunID, Int_t cent,TProfile2D *tpQx1[][3],
+TProfile2D *tpQy1[][3],TProfile2D *tpQx2[][n],TProfile2D *tpQy2[][n],TProfile2D *tpQx3[][n],TProfile2D *tpQy3[][n] );
 
 const Float_t electron_mass = 0.0005485799;
 const Float_t pion_mass = 0.13957061;
@@ -102,174 +102,9 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
 
   std::cout << "Hi! Lets do some physics, Master!" << std::endl;
 
-  
-  //QA//0 - QA mode
-  //raw//1 - raw mode
-  //rec//2 - recentering mode
-  //flow//3 - flattening and flow mode
-  //Int_t mode = 1;
-
-  //false - RunQA OFF
-  //true - RunQA ON
-  Bool_t useRunQA = false;
-
-  Double_t VtxZ;
-  Double_t VtxR;
-  Double_t DCA_EVENT;
-  Double_t DCA_FLOW;
-  Double_t DCA_SYS;
-  Double_t delta_VtxY;
-  Double_t nSigm;
-  
-  Double_t sys_VtxZ = 45.0;
-  Int_t sys_nHits = 18;
-  Double_t sys_DCA = 1.5;
-
-  Int_t runIdBins;// = 20000;
-  Int_t runIdRange[2];// = { 11095000, 11115000 };
-
-  if(strncmp(energy, "39GeV",5)==0){
-    runIdRange[0]=11095000;
-    runIdRange[1]=11115000;
-    runIdBins=runIdRange[1]-runIdRange[0];
-    VtxZ=40.0;
-    VtxR=2.0;
-    delta_VtxY=0.0;
-    DCA_EVENT=2.0;
-    DCA_FLOW=1.0;
-
-    useRunQA = true;
-    DCA_SYS=2.0;
-    Double_t sys_VtxZ=35.0;
-    Int_t sys_nHits=18;
-    Double_t sys_DCA=1.5;
-    nSigm = 3.0;
-
-  }
-
-  if(strncmp(energy, "27GeV",5)==0){
-    runIdRange[0]=12171000;
-    runIdRange[1]=12180000;
-    runIdBins=runIdRange[1]-runIdRange[0];
-    VtxZ=70.0;
-    VtxR=2.0;
-    delta_VtxY=0.0;
-    DCA_EVENT=2.0;
-    DCA_FLOW=1.0;
-    
-    DCA_SYS=2.0;
-    Double_t sys_VtxZ = 45.0;
-    Int_t sys_nHits = 18;
-    Double_t sys_DCA = 1.5;
-    useRunQA = true;
-    nSigm = 1.5;
-
-  }
-
-  if(strncmp(energy, "19GeV",5)==0){
-    runIdRange[0]=12110000;
-    runIdRange[1]=12123000;
-    runIdBins=runIdRange[1]-runIdRange[0];
-    VtxZ=70.0;
-    VtxR=2.0;
-    delta_VtxY=0.0;
-    DCA_EVENT=2.0;
-    DCA_FLOW=1.0;
-    
-    DCA_SYS=2.0;
-    Double_t sys_VtxZ = 45.0;
-    Int_t sys_nHits = 18;
-    Double_t sys_DCA = 1.5;
-    useRunQA = true;
-    nSigm = 3.0;
-
-  }
-
-  if(strncmp(energy, "14GeV",5)==0){
-    runIdRange[0]=15045000;
-    runIdRange[1]=15075000;
-    runIdBins=runIdRange[1]-runIdRange[0];
-    VtxZ=70.0;
-    VtxR=1.0;
-    delta_VtxY=0.8847;
-    DCA_EVENT=2.0;
-    DCA_FLOW=3.0;
-    
-    DCA_SYS=3.0;
-    Double_t sys_VtxZ = 65.0;
-    Int_t sys_nHits = 18;
-    Double_t sys_DCA = 2.5;
-    useRunQA = true;
-    nSigm = 3.0;
-
-  }
-
-  if(strncmp(energy, "11GeV",5)==0){
-    runIdRange[0]=11145000;
-    runIdRange[1]=11165000;
-    runIdBins=runIdRange[1]-runIdRange[0];
-    VtxZ=50.0;
-    VtxR=2.0;
-    delta_VtxY=0.0;
-    DCA_EVENT=2.0;
-    DCA_FLOW=1.0;
-    
-    DCA_SYS=2.0;
-    Double_t sys_VtxZ = 45.0;
-    Int_t sys_nHits = 18;
-    Double_t sys_DCA = 1.5;
-    useRunQA = true;
-    nSigm = 3.0;
-
-  }
-
-  if(strncmp(energy, "7GeV",4)==0){
-    runIdRange[0]=11110000;
-    runIdRange[1]=11150000;
-    runIdBins=runIdRange[1]-runIdRange[0];
-    VtxZ=50.0;
-    VtxR=2.0;
-    delta_VtxY=0.0;
-    DCA_EVENT=2.0;
-    DCA_FLOW=1.0;
-    
-    DCA_SYS=2.0;
-    Double_t sys_VtxZ = 45.0;
-    Int_t sys_nHits = 18;
-    Double_t sys_DCA = 1.5;
-  }
-
-  std::cout<< DCA_SYS<<"\t"<<DCA_FLOW<<"\t"<<DCA_EVENT<<"\t"<< sys_VtxZ<<"\t"<<nSigm<<std::endl;
-
-  Int_t eventCounter = 0;
-  Int_t hundredIter = 0;
- 
-  Int_t c = 9;    // cent9()
-  Int_t cent, RunID;
-  Double_t w = 0.0;
-  Double_t Phi, pt, q, SqM;
-  TVector2 Q1vec[2][2];
-  TVector2 Q2vec[2][8], Q3vec[2][8];
-  Double_t Psi1[2][2], Psi2[2][n], Psi3[2][n];
-
-  Double_t etagap[] ={0.05, 0.075, 0.1, 0.15, 0.2, 0.5};
-  Double_t SqMdown[] = {-0.15, 0.2, 0.74};
-  Double_t SqMup[] = {0.1, 0.32, 1.20};
-  Double_t nSigma[3];
-
-  const Char_t *direction[] = {"east","west"};
-  const Char_t *detector[] = {"TPC","BBC","ZDC"};
-  const Char_t *ngap[] = {"Eta01","Eta15","Eta02","Eta03","Eta04","Eta1","BBC","ZDC"};
-  const Char_t *gap[] = {"gap 0.1","gap 0.15","gap 0.2","gap 0.3","gap 0.4","gap 1.0","BBC","ZDC"};
-  const Char_t *sign[] = {"Pos","Neg"};
-  const Char_t *particles[] = {"pion","kaon","proton","hadrons"};
-  const Char_t *partLateX[] = {"#pi^{+}","pi^{-}","K^{+}","K^{-}","p","#bar{p}"};
-  const Char_t *systematic[] = {"VtxZ", "nHits", "DCA"};
-  const Char_t *systematic_text[] = {"45", "18", "1.5"};
-
-  gSystem->Load("./libStFemtoDst.so");
+  gSystem->Load("/mnt/pool/rhic/1/nigmatkulov/soft/StFemtoEvent/libStFemtoDst.so");
   #if ROOT_VERSION_CODE < ROOT_VERSION(6,0,0)
-  gSystem->Load("./libStFemtoDst.so");
+  gSystem->Load("/mnt/pool/rhic/1/nigmatkulov/soft/StFemtoEvent/libStFemtoDst.so");
   #endif
 
   StFemtoDstReader* femtoReader = new StFemtoDstReader(inFile);
@@ -295,24 +130,228 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
 
   std::cout << "Number of events to read: " << events2read << std::endl;
 
+  //false - RunQA OFF
+  //true - RunQA ON
+  Bool_t useRunQA = false;
+
+  Double_t VtxZ;
+  Double_t VtxR;
+  Double_t DCA_EVENT;
+  Double_t DCA_FLOW;
+  Double_t DCA_SYS;
+  Double_t delta_VtxY;
+  Double_t nSigm;
+  std::vector<Int_t> badRuns;
+  
+  Double_t sys_VtxZ = 45.0;
+  Int_t sys_nHits = 18;
+  Double_t sys_DCA = 1.5;
+
+  Int_t runIdBins;
+  Int_t runIdRange[2];
+
+  if( strncmp(energy, "39GeV",5) == 0) {
+
+    runIdRange[0]=11095000;
+    runIdRange[1]=11115000;
+    runIdBins=runIdRange[1]-runIdRange[0];
+    VtxZ=40.0;
+    VtxR=2.0;
+    delta_VtxY=0.0;
+    DCA_EVENT=2.0;
+    DCA_FLOW=1.0;
+
+    useRunQA = true;
+    DCA_SYS=2.0;
+    Double_t sys_VtxZ=35.0;
+    Int_t sys_nHits=18;
+    Double_t sys_DCA=1.5;
+    nSigm = 3.0;
+    badRuns ={11099102, 11099103, 11099104, 11099106, 11099107, 
+    		  11099125, 11100004, 11100005, 11100008, 11100010, 
+    		  11100011, 11100016, 11100020, 11100071, 11101014, 
+    		  11101104, 11102098, 11103009, 11103047, 11103065, 
+    		  11105011, 11105029, 11106026, 11106027, 11106028, 
+    		  11106029, 11106030, 11106040, 11106041, 11107008, 
+    		  11107046, 11107083, 11108040, 11108053, 11108065, 
+    		  11108075, 11109092, 11109102, 11109105, 11109104, 
+    		  11110005, 11110041, 11110042, 11110086};
+
+  }// if( strncmp(energy, "39GeV",5) == 0 )
+
+  if( strncmp(energy, "27GeV",5) == 0 ){
+    runIdRange[0]=12171000;
+    runIdRange[1]=12180000;
+    runIdBins=runIdRange[1]-runIdRange[0];
+    VtxZ=70.0;
+    VtxR=2.0;
+    delta_VtxY=0.0;
+    DCA_EVENT=2.0;
+    DCA_FLOW=1.0;
+    
+    DCA_SYS=2.0;
+    Double_t sys_VtxZ = 45.0;
+    Int_t sys_nHits = 18;
+    Double_t sys_DCA = 1.5;
+    useRunQA = true;
+    nSigm = 1.5;
+    badRuns ={12172049, 12172056, 12173009, 12173018, 12173026, 
+    		  12173053, 12173054, 12173055, 12173056, 12173057, 
+    		  12173072, 12174077, 12174096, 12174109, 12175007, 
+    		  12175030, 12175089, 12176046, 12176047, 12176067, 
+    		  12176069, 12176104, 12178051, 12178093, 12179068, 
+    		  12179083, 12179084, 12179085, 12179086};
+
+  }// if( strncmp( energy, "27GeV",5) == 0 )
+
+  if( strncmp(energy, "19GeV",5) == 0) {
+    runIdRange[0]=12110000;
+    runIdRange[1]=12123000;
+    runIdBins=runIdRange[1]-runIdRange[0];
+    VtxZ=70.0;
+    VtxR=2.0;
+    delta_VtxY=0.0;
+    DCA_EVENT=2.0;
+    DCA_FLOW=1.0;
+    
+    DCA_SYS=2.0;
+    Double_t sys_VtxZ = 45.0;
+    Int_t sys_nHits = 18;
+    Double_t sys_DCA = 1.5;
+    useRunQA = true;
+    nSigm = 3.0;
+    badRuns ={12113081, 12113084, 12114077, 12114079, 12114085, 
+    	 	  12114088, 12114089, 12114091, 12114094, 12114095, 
+    	 	  12114097, 12114098, 12114099, 12114100, 12114101, 
+    	 	  12114102, 12114103, 12114104, 12114110, 12115025, 
+    	 	  12115026, 12116015, 12116016, 12116063, 12116084, 
+    	 	  12117009, 12118045, 12119008, 12119009, 12119011, 
+    	 	  12119015, 12119016, 12119017, 12119019, 12119020, 
+    	 	  12119021, 12119022, 12119023, 12119024, 12119025, 
+    	 	  12119027, 12119028, 12119029, 12119030, 12119032, 
+    	 	  12119035, 12119036, 12119039, 12120018, 12120073};
+
+  }// if( strncmp(energy, "19GeV",5) == 0 )
+
+  if( strncmp(energy, "14GeV",5) == 0 ) {
+    runIdRange[0]=15045000;
+    runIdRange[1]=15075000;
+    runIdBins=runIdRange[1]-runIdRange[0];
+    VtxZ=70.0;
+    VtxR=1.0;
+    delta_VtxY=0.8847;
+    DCA_EVENT=2.0;
+    DCA_FLOW=3.0;
+    
+    DCA_SYS=3.0;
+    Double_t sys_VtxZ = 65.0;
+    Int_t sys_nHits = 18;
+    Double_t sys_DCA = 2.5;
+    useRunQA = true;
+    nSigm = 3.0;
+    badRuns ={15053027, 15053028, 15053029, 15053034, 15053035, 
+			  15053048, 15053052, 15053053, 15053054, 15053055, 
+			  15053056, 15053057, 15054019, 15054053, 15054054, 
+			  15055018, 15055131, 15055133, 15055134, 15055135, 
+			  15055136, 15055137, 15055138, 15055139, 15055140, 
+			  15055141, 15056001, 15056002, 15056003, 15056004, 
+			  15056005, 15056006, 15056007, 15056008, 15056009, 
+			  15056113, 15056114, 15056116, 15056117, 15056124, 
+			  15056125, 15057001, 15057003, 15057004, 15057006, 
+			  15057007, 15057010, 15057011, 15057013, 15057014, 
+			  15057018, 15057055, 15057059, 15058006, 15058011, 
+			  15058018, 15060061, 15060069, 15061001, 15061002, 
+			  15062006, 15065012, 15065014, 15066008, 15066013, 
+			  15066017, 15068013, 15068014, 15068016, 15069034, 
+			  15069036, 15070009, 15070010};
+
+  }// if( strncmp(energy, "14GeV",5) == 0)
+
+  if( strncmp(energy, "11GeV",5) == 0 ) {
+    runIdRange[0]=11145000;
+    runIdRange[1]=11165000;
+    runIdBins=runIdRange[1]-runIdRange[0];
+    VtxZ=50.0;
+    VtxR=2.0;
+    delta_VtxY=0.0;
+    DCA_EVENT=2.0;
+    DCA_FLOW=1.0;
+    
+    DCA_SYS=2.0;
+    Double_t sys_VtxZ = 45.0;
+    Int_t sys_nHits = 18;
+    Double_t sys_DCA = 1.5;
+    useRunQA = true;
+    nSigm = 3.0;
+    badRuns ={11148001, 11148008, 11148009, 11148010, 11148036, 
+    		  11148055, 11149017, 11149018, 11149040, 11149043, 
+    		  11150017, 11150029, 11151051, 11151057, 11153045, 
+    		  11154026, 11154040, 11154059, 11156036, 11156043, 
+    		  11156044, 11156045, 11157039};
+
+  }// if( strncmp(energy, "11GeV",5) == 0 )
+
+  if(strncmp(energy, "7GeV",4)==0){
+    runIdRange[0]=11110000;
+    runIdRange[1]=11150000;
+    runIdBins=runIdRange[1]-runIdRange[0];
+    VtxZ=50.0;
+    VtxR=2.0;
+    delta_VtxY=0.0;
+    DCA_EVENT=2.0;
+    DCA_FLOW=1.0;
+    
+    DCA_SYS=2.0;
+    Double_t sys_VtxZ = 45.0;
+    Int_t sys_nHits = 18;
+    Double_t sys_DCA = 1.5;
+
+  }// if(strncmp(energy, "7GeV",4)==0)
+ 
+  Int_t c = 9;    // cent9()
+  Int_t cent, RunID;
+  Double_t w = 0.0;
+  Double_t Phi, pt, q, SqM;
+
+  TVector2 Q1vec[2][3];
+  TVector2 Q2vecTPC[3][n], Q3vecTPC[3][n];
+  Double_t Psi1[2][3]; 
+  Double_t Psi2TPC[3][n], Psi3TPC[3][n];
+
+  Double_t etagap[] ={0.05, 0.075, 0.1, 0.15, 0.2, 0.5};
+  Double_t SqMdown[] = {-0.15, 0.2, 0.74};
+  Double_t SqMup[] = {0.1, 0.32, 1.20};
+  Double_t nSigma[3];
+
+	const Char_t *resol[] = {"ew","comb"};
+  const Char_t *direction[] = {"east","west","comb"};
+  const Char_t *detector[] = {"TPC","BBC","ZDC"};
+  const Char_t *ngap[] = {"Eta01","Eta15","Eta02","Eta03","Eta04","Eta1"};
+  const Char_t *gap[] = {"gap 0.1","gap 0.15","gap 0.2","gap 0.3","gap 0.4","gap 1.0"};
+  const Char_t *sign[] = {"Pos","Neg"};
+  const Char_t *particles[] = {"Pion","Kaon","Proton","hadrons"};
+  const Char_t *partLateX[] = {"#pi^{+}","pi^{-}","K^{+}","K^{-}","p","#bar{p}"};
+  const Char_t *systematic[] = {"VtxZ", "nHits", "DCA"};
+  const Char_t *systematic_text[] = {"45", "18", "1.5"};
+
   TFile *outFile = new TFile(outFileName, "RECREATE");
 
   //histogram for Q-vectors and event planes with eta-gap and without error
-  TH1D *h_Qx1[2][2][c], *h_Qy1[2][2][c]; 
-  TH1D *h_Qx2[2][n][c], *h_Qy2[2][n][c], *h_Qx3[2][n][c], *h_Qy3[2][n][c];
-  TH1D *h_Psi1[2][2][c],*h_Psi2[2][n][c], *h_Psi3[2][n][c];
+  TH1D *h_Qx1[2][3][c], *h_Qy1[2][3][c]; 
+  TH1D *h_Qx2[3][n][c], *h_Qy2[3][n][c], *h_Qx3[3][n][c], *h_Qy3[3][n][c];
+  TH1D *h_Psi1[2][3][c],*h_Psi2[3][n][c], *h_Psi3[3][n][c];
   //histogram for check resolution
   TH1D *h_sinPsi2westTPCE[n][c], *h_cosPsi2westTPCE[n][c], *h_sinPsi3westTPCE[n][c], *h_cosPsi3westTPCE[n][c];
 
     if( strncmp(mode, "QA",2) != 0 ) {
 	    // loop by direction
-	    for(Int_t l = 0; l < 2; l++) {
+	    for(Int_t l = 0; l < 3; l++) {
 	      //loop by cent                                                                                                  
 	      for(Int_t j = 0; j < c; j++) {
 	        //loop by eta-gap + BBC and ZDC
 	        for(Int_t i = 0; i < n; i++) {
 
-	          //historam of Q-vectors for east eta-gap 
+	          //historam of Q-vectors for eta-gap 
 	          h_Qx2[l][i][j] = new TH1D(Form("h_Qx2%s%scent%i",direction[l],ngap[i],j),
 	              Form("Q_{x} for #psi_{2} %s %s cent %i;Q_{x}",direction[l],gap[i],j),300,-1.5,1.5);
 	          h_Qy2[l][i][j] = new TH1D(Form("h_Qy2%s%scent%i",direction[l],ngap[i],j),
@@ -330,13 +369,13 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
 	        }// loop by n
 
 	        for(Int_t det = 0; det < 2; det++) {
-	          h_Qx1[l][det][j] = new TH1D(Form("h_Qx1%s%scent%i",direction[l],ngap[det+6],j),
-	            Form("Q_{x} for #psi_{1} %s %s cent %i;Q_{x}",direction[l],gap[det+6],j),300,-1.5,1.5);
-	          h_Qy1[l][det][j] = new TH1D(Form("h_Qy1%s%scent%i",direction[l],ngap[det+6],j),
-	            Form("Q_{y} for #psi_{1} %s %s cent %i;Q_{y}",direction[l],gap[det+6],j),300,-1.5,1.5);
+	          h_Qx1[det][l][j] = new TH1D(Form("h_Qx1%s%scent%i",detector[det+1],direction[l],j),
+	            Form("Q_{x} for #psi_{1} %s %s cent %i;Q_{x}",detector[det+1],direction[l],j),300,-1.5,1.5);
+	          h_Qy1[det][l][j] = new TH1D(Form("h_Qy1%s%scent%i",detector[det+1],direction[l],j),
+	            Form("Q_{y} for #psi_{1} %s %s cent %i;Q_{y}",detector[det+1],direction[l],j),300,-1.5,1.5);
 
-	          h_Psi1[l][det][j] = new TH1D(Form("h_Psi1%s%scent%i",direction[l],ngap[det+6],j),
-	              Form("#psi_{1} %s %s cent %i;#psi_{1}",direction[l],gap[det+6],j),200,-0.1,6.35);
+	          h_Psi1[det][l][j] = new TH1D(Form("h_Psi1%s%scent%i",detector[det+1],direction[l],j),
+	              Form("#psi_{1} %s %s cent %i;#psi_{1}",detector[det+1],direction[l],j),200,-0.1,6.35);
 	        }
 
 	      }// loop by cent
@@ -533,18 +572,18 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
 	    hInvBetaDiffProtonVsPt = new TH2D("hInvBetaDiffProtonVsPt","1/#beta - 1/#beta(p) vs. charge*p_{T};charge * p_{T} (GeV/c);1/#beta - 1/#beta(p)",
 	                                            840, -2.1, 2.1, 200, -0.1, 0.1);
 
-  	}// if( strncmp(mode, "QA",2)==0 )
+  	}// if( strncmp(mode, "QA",2) == 0 )
 
 
   	//***************PROFILES FOR RAW MODE***************//
-	TProfile2D *tp_Qx1[2][2], *tp_Qy1[2][2];
-	TProfile2D *tp_Qx2[2][n], *tp_Qx3[2][n], *tp_Qy2[2][n], *tp_Qy3[2][n];
+	TProfile2D *tp_Qx1[2][3], *tp_Qy1[2][3];
+	TProfile2D *tp_Qx2[3][n], *tp_Qx3[3][n], *tp_Qy2[3][n], *tp_Qy3[3][n];
 
-  	if( strncmp(mode, "raw",3)==0 ) {
+  	if( strncmp(mode, "raw",3) == 0 ) {
 
   		// loop by direction 
-	    for(Int_t l = 0; l < 2; l++) {
-	      // loop by eta-gap of TPC + BBC and ZDC
+	    for(Int_t l = 0; l < 3; l++) {
+	      // loop by eta-gap of TPC 
 	      for(Int_t i = 0; i < n; i++) {
 	      
 	        //TProfile2D for recentering 
@@ -560,28 +599,28 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
 	        tp_Qy3[l][i] = new TProfile2D(Form("tp_Qy3%s%s",direction[l],ngap[i]),
 	        Form("<Q_{y}> for #psi_{3} %s %s;RunID;cent",direction[l],gap[i]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
 
-	      }// loop by eta-gap of TPC + BBC and ZDC
+	      }// loop by eta-gap of TPC 
 
 	      for(Int_t det = 0; det < 2; det++) {
 
-	        tp_Qx1[l][det] = new TProfile2D(Form("tp_Qx1%s%s",direction[l],ngap[det+6]),
-	        Form("<Q_{x}> for #psi_{1} %s %s;RunID;cent",direction[l],gap[det+6]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
+	        tp_Qx1[det][l] = new TProfile2D(Form("tp_Qx1%s%s",detector[det+1],direction[l]),
+	        Form("<Q_{x}> for #psi_{1} %s %s;RunID;cent",detector[det+1],direction[l]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
 
-	        tp_Qy1[l][det] = new TProfile2D(Form("tp_Qy1%s%s",direction[l],ngap[det+6]),
-	        Form("<Q_{y}> for #psi_{1} %s %s;RunID;cent",direction[l],gap[det+6]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
+	        tp_Qy1[det][l] = new TProfile2D(Form("tp_Qy1%s%s",detector[det+1],direction[l]),
+	        Form("<Q_{y}> for #psi_{1} %s %s;RunID;cent",detector[det+1],direction[l]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
 	      }
 	    }// loop by direction
 
-  	}// if( strncmp(mode, "raw",3)==0 )
+  	}// if( strncmp(mode, "raw",3) == 0 )
 
 
   	//***************PROFILES FOR RECENTERING MODE***************//
-  	TProfile2D *tp_sinPsi1[2][2][20], *tp_cosPsi1[2][2][20];
-	TProfile2D *tp_sinPsi2[2][n][4], *tp_cosPsi2[2][n][4], *tp_sinPsi3[2][n][4], *tp_cosPsi3[2][n][4];
+  	TProfile2D *tp_sinPsi1[2][3][20], *tp_cosPsi1[2][3][20];
+		TProfile2D *tp_sinPsi2[3][n][4], *tp_cosPsi2[3][n][4], *tp_sinPsi3[3][n][4], *tp_cosPsi3[3][n][4];
 
-  	if( strncmp(mode, "rec",3)==0 ) { 
+  	if( strncmp(mode, "rec",3) == 0 ) { 
 
-	    for(Int_t l = 0; l < 2; l++) {
+	    for(Int_t l = 0; l < 3; l++) {
 
 	      for(Int_t i = 0; i < n; i++) {
 	        for(Int_t j = 0; j < 4; j++) {
@@ -604,17 +643,17 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
 	      for(Int_t det = 0; det < 2; det++) {
 	        for(Int_t j = 0; j < 20; j++) {
 	          
-	          tp_sinPsi1[l][det][j] = new TProfile2D(Form("tp_%isinPsi1%s%s",j+1,direction[l],ngap[det+6]),
-	          Form("<sin(%i*#psi_{1})> %s %s",j+1,direction[l],gap[det+6]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
+	          tp_sinPsi1[det][l][j] = new TProfile2D(Form("tp_%isinPsi1%s%s",j+1,detector[det+1],direction[l]),
+	          Form("<sin(%i*#psi_{1})> %s %s",j+1,detector[det+1],direction[l]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
 
-	          tp_cosPsi1[l][det][j] = new TProfile2D(Form("tp_%icosPsi1%s%s",j+1,direction[l],ngap[det+6]),
-	          Form("<cos(%i*#psi_{1})> %s %s",j+1,direction[l],gap[det+6]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
+	          tp_cosPsi1[det][l][j] = new TProfile2D(Form("tp_%icosPsi1%s%s",j+1,detector[det+1],direction[l]),
+	          Form("<cos(%i*#psi_{1})> %s %s",j+1,detector[det+1],direction[l]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
 	        }
 	      }
 
 	    }// for(Int_t l = 0; l < 2; l++)
 
-	}// if( strncmp(mode, "rec",3)==0 )
+	}// if( strncmp(mode, "rec",3) == 0 )
 
 
 	//***************PROFILES FOR FLATTENING AND FLOW MODE***************//
@@ -627,112 +666,142 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
 	//*****Resolution^2 for Psi2 and Psi3*****// 
 	TProfile *tp_SqRes2[n], *tp_SqRes3[n];
 	//*****Flows*****//
-	TProfile *tp_v1[2][9];
-	TProfile *tp_v2cent[3][n-2], *tp_v3cent[3][n-2];
-	TProfile2D *tp_v2[3][n-2], *tp_v3[3][n-2];
-	TProfile2D *tp_v2PID[2][3][3][n-2], *tp_v3PID[2][3][3][n-2];
-	//*****Flows systematic*****//
-	TProfile2D *tp_v2_sys[3][n-2][3], *tp_v3_sys[3][n-2][3];
-	TProfile2D *tp_v2PID_sys[2][3][3][n-2][3], *tp_v3PID_sys[2][3][3][n-2][3];
-	//*****Mean pt for PID and hadrons*****//
-	TProfile2D *tp_meanPt_PID[2][3][3][n-2];
-	TProfile2D *tp_meanPt_PID_sys[2][3][3][n-2][3];
-	TProfile2D *tp_meanPt_hadrons[3][n-2];
-	TProfile2D *tp_meanPt_hadrons_sys[3][n-2][3];
+	TProfile *tp_v1ew[2][9], *tp_v1comb[2][9];
+	TProfile2D *tp_v2hadrTPC[n][2], *tp_v3hadrTPC[n][2];
+	TProfile2D *tp_v2hadrTPCsys[n][2][3], *tp_v3hadrTPCsys[n][2][3];
 
-	if( strncmp(mode, "flow",4)==0 ) {
+	TProfile2D *tp_v2pidTPC[n][2][2][3], *tp_v3pidTPC[n][2][2][3];
+
+	TProfile2D *tp_meanPt_hadrons[n];
+	TProfile2D *tp_meanPt_hadrons_sys[n][3];
+	TProfile2D *tp_meanPt_PID[n][2][3];
+
+	
+	//*****Flows systematic*****//
+	
+	TProfile2D *tp_v2pidTPCsys[n][2][2][3][3]; 
+	TProfile2D *tp_v3pidTPCsys[n][2][2][3][3];
+
+	//*****Mean pt for PID and hadrons*****//
+	
+	TProfile2D *tp_meanPt_PID_sys[n][2][3][3];
+
+	
+
+	if( strncmp(mode, "flow",4) == 0 ) {
 
 		for(Int_t det = 0; det < 2; det++) {
-	  	tp_SqRes1[det] = new TProfile(Form("tp_SqRes1%s",ngap[det+6]),Form("Resolution^{2} for v_{1} %s",gap[det+6]),9,0,9);
+	  	tp_SqRes1[det] = new TProfile(Form("tp_SqRes1%s",detector[det+1]),
+	  																Form("Resolution^{2} for v_{1} %s",detector[det+1]),9,0,9);
 	  }
 
 	  for(Int_t i = 0; i < n; i++) {
-	    tp_SqRes2[i] = new TProfile(Form("tp_SqRes2%s",ngap[i]),Form("Resolution^{2} for v_{2} %s",gap[i]),9,0,9);
-	    tp_SqRes3[i] = new TProfile(Form("tp_SqRes3%s",ngap[i]),Form("Resolution^{2} for v_{3} %s",gap[i]),9,0,9);
-	  }
+	  	
+	    tp_SqRes2[i] = new TProfile(Form("tp_SqRes2%s",ngap[i]),
+	    														Form("Resolution^{2} for v_{2} %s",gap[i]),9,0,9);
+	    tp_SqRes3[i] = new TProfile(Form("tp_SqRes3%s",ngap[i]),
+	    														Form("Resolution^{2} for v_{3} %s",gap[i]),9,0,9);
+	  	
+		}
 
 	  for(Int_t det = 0; det < 2; det++) {
 	  	for(Int_t j = 0; j < c; j++) {
-	  		tp_v1[det][j] = new TProfile( Form( "tp_v1%scent%i",detector[det+1],j), 
-	                                   	Form( "v_{1} of pseudorapidity cent %i by %s",j,detector[det+1]),20,-1,1);
+	  		tp_v1ew[det][j] = new TProfile( Form( "tp_v1ew%scent%i",detector[det+1],j), 
+	                                   		Form( "v_{1} of pseudorapidity cent %i ew by %s",j,detector[det+1]),20,-1,1);
+	  		tp_v1comb[det][j] = new TProfile( Form( "tp_v1comb%scent%i",detector[det+1],j), 
+	                                   			Form( "v_{1} of pseudorapidity cent %i comb by %s",j,detector[det+1]),20,-1,1);
 	    }
 	  }
 
-	  for(Int_t i = 0; i < n-2; i++) {
-	   	for(Int_t j = 0; j < 3; j++) {
+	  for(Int_t i = 0; i < n; i++) {
 
-	   		tp_v2cent[j][i] = new TProfile(Form("tp_v2cent%s%s",detector[j],ngap[i]),
-	                            Form("v_{2} of cent %s by %s;cent;v_{2}",gap[i],detector[j]),9,0,9);
-	      tp_v3cent[j][i] = new TProfile(Form("tp_v3cent%s%s",detector[j],ngap[i]),
-	                            Form("v_{3} of cent %s by %s;cent;v_{3}",gap[i],detector[j]),9,0,9);
-	      tp_v2[j][i] = new TProfile2D(Form("tp_v2_hadrons%s%s",detector[j],ngap[i]),
-	                        Form("v_{2} of p_{t} and cent %s by %s;p_{t} [GeV/c];cent",gap[i],detector[j]),30,0.2,3.2,9,0,9);
-	      tp_v3[j][i] = new TProfile2D(Form("tp_v3_hadrons%s%s",detector[j],ngap[i]),
-	                        Form("v_{3} of p_{t} and cent %s by %s;p_{t} [GeV/c];cent",gap[i],detector[j]),30,0.2,3.2,9,0,9);
-	      tp_meanPt_hadrons[j][i] = new TProfile2D(Form("tp_meanPt_hadrons%s%s",detector[j],ngap[i]),
-	      Form("Mean p_{t} for bins v_{2} #Delta#eta-gap=%s %s; bin; p_{t} [GeV/c]",gap[i],detector[j]),30,0.2,3.2,9,0,9);
+	  	tp_meanPt_hadrons[i] = new TProfile2D(Form("tp_meanPt_hadrons%s",ngap[i]),
+	    Form("Mean p_{t} for bins v_{2} %s; bin; p_{t} [GeV/c]",gap[i]),30,0.2,3.2,9,0,9);
 
-	      if(i < 3 && j==0){
-	      	for(Int_t nsys = 0; nsys < 3; nsys++){
+	    for(Int_t nsys = 0; nsys < 3; nsys++) {
+	    	tp_meanPt_hadrons_sys[i][nsys] = new TProfile2D(Form("tp_meanPt_hadrons_sys%s%s",ngap[i],systematic[nsys]),
+	      Form("Mean p_{t} for bins v_{2} %s Systematic:%s; bin; p_{t} [GeV/c]",gap[i],systematic[nsys]),30,0.2,3.2,9,0,9);
+	    }
+
+	    Int_t p = 0; 
+	    for(Int_t mark = 0; mark < 2; mark++) {
+	    	for(Int_t part = 0; part < 3; part++) {
+
+	    		tp_meanPt_PID[i][mark][part] = new TProfile2D(
+	    		Form("tp_meanPt_PID%s%s%s",ngap[i],sign[mark],particles[part]),
+	    		Form("Mean p_{t} for %s of p_{t} and cent %s;p_{t} [GeV/c];cent",partLateX[p],ngap[i]),
+	    					30,0.2,3.2,9,0,9);
+
+	    		for(Int_t nsys = 0; nsys < 3; nsys++) {
+
+	    			tp_meanPt_PID_sys[i][mark][part][nsys] = new TProfile2D(
+	    			Form("tp_meanPt_PID_sys%s%s%s%s",ngap[i],sign[mark],particles[part],systematic[nsys]),
+	    			Form("Mean p_{t} for %s of p_{t} and cent %s %s;p_{t} [GeV/c];cent",partLateX[p],ngap[i],systematic[nsys]),
+	    						30,0.2,3.2,9,0,9);
+
+	    		}
+	    		p++;
+	    	}
+	    }
+
+	  	for(Int_t dir = 0; dir < 2; dir++) {
+
+				tp_v2hadrTPC[i][dir] = new TProfile2D(Form("tp_v2hadrTPC%s%s",ngap[i],resol[dir]),
+	                        Form("v_{2} of p_{t} and cent %s %s by TPC;p_{t} [GeV/c];cent",gap[i],resol[dir]),30,0.2,3.2,9,0,9);
+	      tp_v3hadrTPC[i][dir] = new TProfile2D(Form("tp_v3hadrTPC%s%s",ngap[i],resol[dir]),
+	                        Form("v_{3} of p_{t} and cent %s %s by TPC;p_{t} [GeV/c];cent",gap[i],resol[dir]),30,0.2,3.2,9,0,9);
+
+	      for(Int_t nsys = 0; nsys < 3; nsys++) {
+
+	        tp_v2hadrTPCsys[i][dir][nsys] = new TProfile2D(
+	        Form("tp_v2hadrTPCsys%s%s%s",ngap[i],resol[dir],systematic[nsys]),
+	        Form("v_{2} of p_{t} and cent %s %s by TPC Systematic: %s;p_{t} [GeV/c];cent",gap[i],resol[dir],systematic[nsys]),
+	        			30,0.2,3.2,9,0,9);
 	            
-	        	tp_v2_sys[j][i][nsys] = new TProfile2D(Form("tp_v2_hadrons%s%s%s",detector[j],ngap[i], systematic[nsys]),
-	          Form("v_{2} of p_{t} and cent %s by %s Systematic:%s;p_{t} [GeV/c];cent",gap[i],detector[j], systematic[nsys]),30,0.2,3.2,9,0,9);
-	            
-	          tp_v3_sys[j][i][nsys] = new TProfile2D(Form("tp_v3_hadrons%s%s%s",detector[j],ngap[i],systematic[nsys]),
-	          Form("v_{3} of p_{t} and cent %s by %s Systematic:%s;p_{t} [GeV/c];cent",gap[i],detector[j],systematic[nsys]),30,0.2,3.2,9,0,9);
-	            
-	          tp_meanPt_hadrons_sys[j][i][nsys] = new TProfile2D(Form("tp_meanPt_hadrons%s%s%s",detector[j],ngap[i],systematic[nsys]),
-	          Form("Mean p_{t} for bins v_{2} #Delta#eta-gap=%s %s Systematic:%s; bin; p_{t} [GeV/c]",gap[i],detector[j],systematic[nsys]),30,0.2,3.2,9,0,9);
-	        }
+	        tp_v3hadrTPCsys[i][dir][nsys] = new TProfile2D(
+	        Form("tp_v3hadrTPCsys%s%s%s",ngap[i],resol[dir],systematic[nsys]),
+	        Form("v_{3} of p_{t} and cent %s %s by TPC Systematic: %s;p_{t} [GeV/c];cent",gap[i],resol[dir],systematic[nsys]),
+	        			30,0.2,3.2,9,0,9);
+	        
 	      }
 
-	      Int_t part = 0;
-	      for(Int_t k = 0; k < 3; k++) {
-	        for(Int_t l = 0; l < 2; l++) {
-	          tp_v2PID[l][k][j][i] = new TProfile2D( Form("tp_v2_%s%s%s%s",particles[k],sign[l],detector[j],ngap[i]), 
-	          Form("v_{2} for %s of p_{t} and cent %s by %s;p_{t} [GeV/c];cent",partLateX[part],gap[i],detector[j]),30,0.2,3.2,9,0,9);
-	          
-	          tp_v3PID[l][k][j][i] = new TProfile2D( Form("tp_v3_%s%s%s%s",particles[k],sign[l],detector[j],ngap[i]), 
-	          Form("v_{3} for %s of p_{t} and cent %s by %s;p_{t} [GeV/c];cent",partLateX[part],gap[i],detector[j]),30,0.2,3.2,9,0,9);
-	          
-	          tp_meanPt_PID[l][k][j][i] = new TProfile2D(Form("tp_meanPt_%s%s%s%s",particles[k],sign[l],detector[j],ngap[i]),
-	          Form("Mean p_{t} for %s of p_{t} and cent %s by %s;p_{t} [GeV/c];cent",particles[k],sign[l],detector[j],ngap[i]), 30,0.2,3.2,9,0,9);
-	            
-	          if(i < 3 && j==0){
-	            for(Int_t nsys = 0; nsys < 3; nsys++){
-	            	tp_v2PID_sys[l][k][j][i][nsys] = new TProfile2D( Form("tp_v2_%s%s%s%s%s",particles[k],sign[l],detector[j],ngap[i], systematic[nsys]), 
-	              Form("v_{2} for %s of p_{t} and cent %s by %s Systematic: %s;p_{t} [GeV/c];cent",partLateX[part],gap[i],detector[j], systematic[nsys]),30,0.2,3.2,9,0,9);
+	      p = 0; 
+	      for(Int_t mark = 0; mark < 2; mark++) {
+	      	for(Int_t part = 0; part < 3; part++) {
+
+	      		tp_v2pidTPC[i][dir][mark][part] = new TProfile2D(
+	      		Form("tp_v2pidTPC%s%s%s%s",ngap[i],resol[dir],sign[mark],particles[part]), 
+	          Form("v_{2} for %s of p_{t} and cent %s by TPC;p_{t} [GeV/c];cent",partLateX[p],gap[i]),
+	          			30,0.2,3.2,9,0,9);
+
+	          tp_v3pidTPC[i][dir][mark][part] = new TProfile2D(
+	          Form("tp_v3pidTPC%s%s%s%s",ngap[i],resol[dir],sign[mark],particles[part]), 
+	          Form("v_{3} for %s of p_{t} and cent %s by TPC;p_{t} [GeV/c];cent",partLateX[p],gap[i]),
+	          			30,0.2,3.2,9,0,9);
+
+	          for(Int_t nsys = 0; nsys < 3; nsys++) {
+
+	            tp_v2pidTPCsys[i][dir][mark][part][nsys] = new TProfile2D( 
+	            Form("tp_v2pidTPCsys%s%s%s%s%s",ngap[i],resol[dir],sign[mark],particles[part],systematic[nsys]), 
+	            Form("v_{2} for %s of p_{t} and cent %s by TPC Systematic: %s;p_{t} [GeV/c];cent",partLateX[p],gap[i],systematic[nsys]),
+	              		30,0.2,3.2,9,0,9);
 	                
-	              tp_v3PID_sys[l][k][j][i][nsys] = new TProfile2D( Form("tp_v3_%s%s%s%s%s",particles[k],sign[l],detector[j],ngap[i], systematic[nsys]), 
-	              Form("v_{3} for %s of p_{t} and cent %s by %s Systematic: %s;p_{t} [GeV/c];cent",partLateX[part],gap[i],detector[j], systematic[nsys]),30,0.2,3.2,9,0,9);
-	                
-	              tp_meanPt_PID_sys[l][k][j][i][nsys] = new TProfile2D(Form("tp_meanPt_%s%s%s%s%s",particles[k],sign[l],detector[j],ngap[i], systematic[nsys]),
-	              Form("Mean p_{t} for %s of p_{t} and cent %s by %s Systematic: %s;p_{t} [GeV/c];cent",particles[k],sign[l],detector[j],ngap[i],systematic[nsys]),30,0.2,3.2,9,0,9);
-	            }
+	            tp_v3pidTPCsys[i][dir][mark][part][nsys] = new TProfile2D( 
+	            Form("tp_v3pidTPCsys%s%s%s%s%s",ngap[i],resol[dir],sign[mark],particles[part],systematic[nsys]), 
+	            Form("v_{3} for %s of p_{t} and cent %s by TPC Systematic: %s;p_{t} [GeV/c];cent",partLateX[p],gap[i],systematic[nsys]),
+	              		30,0.2,3.2,9,0,9);
+
 	          }
-	          part++;
+	        	p++;
+	      	} 
+	      }
 
-	        }// for(Int_t l = 0; l < 2; l++)
-	      }// for(Int_t k = 0; k < 3; k++)
+	    }// for(Int_t dir = 0; dir < 2; dir++)
 
-	    }// for(Int_t j = 0; j < 3; j++) 
-	 	}// for(Int_t i = 0; i < n-2; i++)
+	  }// for(Int_t i = 0; i < n; i++)
 
 	}// if( strncmp(mode, "flow",4)==0 )
 
-  
-  // RunQA
-  std::vector<Int_t> BadRuns;
-  if(useRunQA == true) {
-  	Int_t buff = 0;
-    BadRuns.reserve(1000);
-    ifstream BadRunList(Form("/mnt/pool/1/aspovarov/basov/test/Bad_Run_%s.txt", energy));
-    while( !BadRunList.eof() ) {
-    	BadRunList >> buff;
-      BadRuns.push_back( buff );
-    }
-  std::cout << "BadRunLists yep" << std::endl;
-	}//RunQA
 
 	//loop by event
 	for(Long64_t iEvent=0; iEvent<events2read; iEvent++) {
@@ -772,12 +841,12 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
     Int_t nTracks = dst->numberOfTracks();
             
     //RunQA
-    if( useRunQA == true && std::find(BadRuns.begin(), BadRuns.end(), event -> runId()) != BadRuns.end() ) continue;
+    if( useRunQA == true && std::find(badRuns.begin(), badRuns.end(), event -> runId()) != badRuns.end() ) continue;
 
   /*////////////////////////////////////////////////////////////////////////////////////////*/
  /*______________________________________QA MODE___________________________________________*/
 /*////////////////////////////////////////////////////////////////////////////////////////*/
-		if( strncmp(mode, "QA",2)==0 ){
+	if( strncmp(mode, "QA",2)==0 ){
 
 			// Fill event histograms
       hRefMult->Fill( event->refMult() );
@@ -930,84 +999,70 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
         } //if( isTofTrack() )
 
       } //for(Int_t iTrk=0; iTrk<nTracks; iTrk++)
-		} //if( strncmp(mode, "QA",2)==0 )
+	} //if( strncmp(mode, "QA",2)==0 )
 
   /*/////////////////////////////////////////////////////////////////////////////////////////*/
  /*______________________________________RAW MODE___________________________________________*/
 /*/////////////////////////////////////////////////////////////////////////////////////////*/
-    if( strncmp(mode, "raw",3)==0 ) {
+    if( strncmp(mode, "raw",3) == 0 ) {
 
-    	for(Int_t l = 0; l < 2; l++) {
-  			for(Int_t det = 0; det < 2; det++) {
-  				Q1vec[l][det].Set(0.,0.);
-  			}
-  			for(Int_t i = 0; i < n-1; i++) {
-  				Q2vec[l][i].Set(0.,0.);
-  				Q3vec[l][i].Set(0.,0.);
+    	for(Int_t dir = 0; dir < 3; dir++) {
+    		for(Int_t det = 0; det < 2; det++) {
+    			Q1vec[det][dir].Set(0.,0.);
+    		}
+  			
+  			for(Int_t i = 0; i < n; i++) {
+  				Q2vecTPC[dir][i].Set(0.,0.);
+  				Q3vecTPC[dir][i].Set(0.,0.);
   			}
   		}
 
       for(Int_t dir = 0; dir < 2; dir++) {
-      	Q1vec[dir][0] = CalculateBBCQVec(event, dir, 1.0);
-        Q1vec[dir][1] = CalculateZDCQVec(event, dir);
+      	Q1vec[0][dir] = CalculateBBCQVec(event, dir, 1.0);
+        Q1vec[1][dir] = CalculateZDCQVec(event, dir);
       }
-      for(Int_t dir = 0; dir < 2; dir++) {
-        Q2vec[dir][6] = CalculateBBCQVec(event, dir, 2.0);
-        Q3vec[dir][6] = CalculateBBCQVec(event, dir, 3.0);
-      }
-      CalculateTPCQVec(Q2vec, Q3vec, dst, n-2, DCA_EVENT);
+      Q1vec[0][2] = Q1vec[0][1] - Q1vec[0][0];
+      Q1vec[1][2] = Q1vec[1][1] - Q1vec[1][0];
+      
+      CalculateTPCQVec(Q2vecTPC, Q3vecTPC, dst, n, DCA_EVENT);
             
     	cent = event -> cent9();
     	RunID = event -> runId();
 
-      for(Int_t l = 0; l < 2; l ++) {
-        for(Int_t i = 0; i < n-1; i++) {
+      for(Int_t dir = 0; dir < 3; dir ++) {
+        for(Int_t i = 0; i < n; i++) {
+          if( Q2vecTPC[dir][i].Mod() != 0. && Q3vecTPC[dir][i].Mod() != 0.) {
+            h_Qx2[dir][i][cent] -> Fill( Q2vecTPC[dir][i].X() );
+            h_Qy2[dir][i][cent] -> Fill( Q2vecTPC[dir][i].Y() );
+            h_Qx3[dir][i][cent] -> Fill( Q3vecTPC[dir][i].X() );
+            h_Qy3[dir][i][cent] -> Fill( Q3vecTPC[dir][i].Y() );
 
-        	// Fill only TPC
-          if( Q2vec[l][i].Mod() != 0. && Q3vec[l][i].Mod() != 0. && i < 6) {
-            h_Qx2[l][i][cent] -> Fill( Q2vec[l][i].X() );
-            h_Qy2[l][i][cent] -> Fill( Q2vec[l][i].Y() );
-            h_Qx3[l][i][cent] -> Fill( Q3vec[l][i].X() );
-            h_Qy3[l][i][cent] -> Fill( Q3vec[l][i].Y() );
+        	  h_Psi2[dir][i][cent] -> Fill( 1.0/2.0 * Q2vecTPC[dir][i].Phi()  );
+        	  h_Psi3[dir][i][cent] -> Fill( 1.0/3.0 * Q3vecTPC[dir][i].Phi()  ); 
 
-        	  h_Psi2[l][i][cent] -> Fill( 1.0/2.0 * Q2vec[l][i].Phi()  );
-        	  h_Psi3[l][i][cent] -> Fill( 1.0/3.0 * Q3vec[l][i].Phi()  ); 
-
-   		      tp_Qx2[l][i] -> Fill( (Double_t)RunID, (Double_t)cent, Q2vec[l][i].X() );
-   		      tp_Qy2[l][i] -> Fill( (Double_t)RunID, (Double_t)cent, Q2vec[l][i].Y() );
-   		      tp_Qx3[l][i] -> Fill( (Double_t)RunID, (Double_t)cent, Q3vec[l][i].X() );
-   		      tp_Qy3[l][i] -> Fill( (Double_t)RunID, (Double_t)cent, Q3vec[l][i].Y() );
+   		      tp_Qx2[dir][i] -> Fill( (Double_t)RunID, (Double_t)cent, Q2vecTPC[dir][i].X() );
+   		      tp_Qy2[dir][i] -> Fill( (Double_t)RunID, (Double_t)cent, Q2vecTPC[dir][i].Y() );
+   		      tp_Qx3[dir][i] -> Fill( (Double_t)RunID, (Double_t)cent, Q3vecTPC[dir][i].X() );
+   		      tp_Qy3[dir][i] -> Fill( (Double_t)RunID, (Double_t)cent, Q3vecTPC[dir][i].Y() );
           }
-          // Fill BBc and ZDC
-          if( Q2vec[l][i].Mod() != 0. && Q3vec[l][i].Mod() != 0. && i > 5) {
-            h_Qx2[l][i][cent] -> Fill( Q2vec[l][i].X() );
-            h_Qy2[l][i][cent] -> Fill( Q2vec[l][i].Y() );
-            h_Qx3[l][i][cent] -> Fill( Q3vec[l][i].X() );
-            h_Qy3[l][i][cent] -> Fill( Q3vec[l][i].Y() );
-
-            h_Psi2[l][i][cent] -> Fill( 1.0/2.0 * Q2vec[l][i].Phi()  );
-            h_Psi3[l][i][cent] -> Fill( 1.0/3.0 * Q3vec[l][i].Phi()  ); 
-
-            tp_Qx2[l][i] -> Fill( (Double_t)RunID, (Double_t)cent, Q2vec[l][i].X() );
-            tp_Qy2[l][i] -> Fill( (Double_t)RunID, (Double_t)cent, Q2vec[l][i].Y() );
-            tp_Qx3[l][i] -> Fill( (Double_t)RunID, (Double_t)cent, Q3vec[l][i].X() );
-            tp_Qy3[l][i] -> Fill( (Double_t)RunID, (Double_t)cent, Q3vec[l][i].Y() );
-          }	      
-        } //for(Int_t i = 0; i < n-1; i++)  
+        } //for(Int_t i = 0; i < n; i++)  
 
         for(Int_t det = 0; det < 2; det++) {
-          if( Q1vec[l][det].Mod() != 0. ) {
-            h_Qx1[l][det][cent] -> Fill( Q1vec[l][det].X() );
-            h_Qy1[l][det][cent] -> Fill( Q1vec[l][det].Y() );
+          if( Q1vec[det][dir].Mod() != 0. ) {
+            h_Qx1[det][dir][cent] -> Fill( Q1vec[det][dir].X() );
+            h_Qy1[det][dir][cent] -> Fill( Q1vec[det][dir].Y() );
 
-            h_Psi1[l][det][cent] -> Fill( Q1vec[l][det].Phi() );
+            h_Psi1[det][dir][cent] -> Fill( Q1vec[det][dir].Phi() );
 
-            tp_Qx1[l][det] -> Fill( (Double_t)RunID, (Double_t)cent, Q1vec[l][det].X() );
-            tp_Qy1[l][det] -> Fill( (Double_t)RunID, (Double_t)cent, Q1vec[l][det].Y() );
+            tp_Qx1[det][dir] -> Fill( (Double_t)RunID, (Double_t)cent, Q1vec[det][dir].X() );
+            tp_Qy1[det][dir] -> Fill( (Double_t)RunID, (Double_t)cent, Q1vec[det][dir].Y() );
           }
         }
-      } //for(Int_t l = 0; l < 2; l ++)
-		} //if( strncmp(mode, "raw",3)==0 )
+
+      }// for(Int_t dir = 0; dir < 3; dir++)
+
+		}// if( strncmp(mode, "raw",3) == 0 )
+
 
   /*////////////////////////////////////////////////////////////////////////////////////////*/
  /*___________________________________RECENTERING MODE_____________________________________*/
@@ -1015,102 +1070,84 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
 		if( strncmp(mode, "rec",3)==0 ) {
 
 			TFile *f1 = new TFile(Form("/mnt/pool/1/aspovarov/basov/test/OUT/NoRe_%s.root",energy),"READ");
-	    TProfile2D *tpQx1[2][2], *tpQy1[2][2];
-	    TProfile2D *tpQx2[2][n], *tpQy2[2][n], *tpQx3[2][n], *tpQy3[2][n];
-	    for(Int_t l = 0; l < 2; l++) {
+	    TProfile2D *tpQx1[2][3], *tpQy1[2][3];
+	    TProfile2D *tpQx2[3][n], *tpQy2[3][n], *tpQx3[3][n], *tpQy3[3][n];
+	    for(Int_t dir = 0; dir < 3; dir++) {
 	      for(Int_t i = 0; i < n; i++) {
-	        tpQx2[l][i] = (TProfile2D*) f1 -> Get( Form("tp_Qx2%s%s",direction[l],ngap[i]) );
-	        tpQx3[l][i] = (TProfile2D*) f1 -> Get( Form("tp_Qx3%s%s",direction[l],ngap[i]) );
-	        tpQy2[l][i] = (TProfile2D*) f1 -> Get( Form("tp_Qy2%s%s",direction[l],ngap[i]) );
-	        tpQy3[l][i] = (TProfile2D*) f1 -> Get( Form("tp_Qy3%s%s",direction[l],ngap[i]) );
+	        tpQx2[dir][i] = (TProfile2D*) f1 -> Get( Form("tp_Qx2%s%s",direction[dir],ngap[i]) );
+	        tpQx3[dir][i] = (TProfile2D*) f1 -> Get( Form("tp_Qx3%s%s",direction[dir],ngap[i]) );
+	        tpQy2[dir][i] = (TProfile2D*) f1 -> Get( Form("tp_Qy2%s%s",direction[dir],ngap[i]) );
+	        tpQy3[dir][i] = (TProfile2D*) f1 -> Get( Form("tp_Qy3%s%s",direction[dir],ngap[i]) );
 	      }
 	      for(Int_t det = 0; det < 2; det++) {
-	        tpQx1[l][det] = (TProfile2D*) f1 -> Get( Form("tp_Qx1%s%s",direction[l],ngap[det+6]) );
-	        tpQy1[l][det] = (TProfile2D*) f1 -> Get( Form("tp_Qy1%s%s",direction[l],ngap[det+6]) );
+	        tpQx1[det][dir] = (TProfile2D*) f1 -> Get( Form("tp_Qx1%s%s",detector[det+1],direction[dir]) );
+	        tpQy1[det][dir] = (TProfile2D*) f1 -> Get( Form("tp_Qy1%s%s",detector[det+1],direction[dir]) );
 	      }
 	    }
 
-	    for(Int_t l = 0; l < 2; l++) { 
-        for(Int_t det = 0; det < 2; det++) {
-          Q1vec[l][det].Set(0.,0.);
-        }
-        for(Int_t i = 0; i < n-1; i++) {
-          Q2vec[l][i].Set(0.,0.);
-          Q3vec[l][i].Set(0.,0.);
-        }
-      }
+	    for(Int_t dir = 0; dir < 3; dir++) {
+    		for(Int_t det = 0; det < 2; det++) {
+    			Q1vec[det][dir].Set(0.,0.);
+    		}
+  			
+  			for(Int_t i = 0; i < n; i++) {
+  				Q2vecTPC[dir][i].Set(0.,0.);
+  				Q3vecTPC[dir][i].Set(0.,0.);
+  			}
+  		}
 
       for(Int_t dir = 0; dir < 2; dir++) {
-        Q1vec[dir][0] = CalculateBBCQVec(event, dir, 1.0);
-        Q1vec[dir][1] = CalculateZDCQVec(event, dir);
+      	Q1vec[0][dir] = CalculateBBCQVec(event, dir, 1.0);
+        Q1vec[1][dir] = CalculateZDCQVec(event, dir);
       }
+      Q1vec[0][2] = Q1vec[0][1] - Q1vec[0][0];
+      Q1vec[1][2] = Q1vec[1][1] - Q1vec[1][0];
 
-      for(Int_t l = 0; l < 2; l++) {
-        Q2vec[l][6] = CalculateBBCQVec(event, l, 2.0);
-        Q3vec[l][6] = CalculateBBCQVec(event, l, 3.0);
-      }
-      CalculateTPCQVec(Q2vec, Q3vec, dst, n-2, DCA_EVENT);
+      CalculateTPCQVec(Q2vecTPC, Q3vecTPC, dst, n, DCA_EVENT);
              
       cent = (Double_t)(event -> cent9());
       RunID = event -> runId();
 
-      Recentering(Q1vec,Q2vec,Q3vec,RunID,cent,tpQx1,tpQy1,tpQx2,tpQy2,tpQx3,tpQy3);   
+      Recentering(Q1vec,Q2vecTPC,Q3vecTPC,RunID,cent,tpQx1,tpQy1,tpQx2,tpQy2,tpQx3,tpQy3);  
 
-      for(Int_t l = 0; l < 2; l ++) { 
-        for(Int_t i = 0; i < n-1; i++) {  
+       for(Int_t dir = 0; dir < 3; dir ++) {
+        for(Int_t i = 0; i < n; i++) {
+          if( Q2vecTPC[dir][i].Mod() != 0. && Q3vecTPC[dir][i].Mod() != 0.) {
+            h_Qx2[dir][i][cent] -> Fill( Q2vecTPC[dir][i].X() );
+            h_Qy2[dir][i][cent] -> Fill( Q2vecTPC[dir][i].Y() );
+            h_Qx3[dir][i][cent] -> Fill( Q3vecTPC[dir][i].X() );
+            h_Qy3[dir][i][cent] -> Fill( Q3vecTPC[dir][i].Y() );
 
-          // Fill only TPC
-          if( Q2vec[l][i].Mod() != 0. && Q3vec[l][i].Mod() != 0. && i < 6) {
-            h_Qx2[l][i][cent] -> Fill( Q2vec[l][i].X() );
-            h_Qy2[l][i][cent] -> Fill( Q2vec[l][i].Y() );
-            h_Qx3[l][i][cent] -> Fill( Q3vec[l][i].X() );
-            h_Qy3[l][i][cent] -> Fill( Q3vec[l][i].Y() );
+        	  h_Psi2[dir][i][cent] -> Fill( 1.0/2.0 * Q2vecTPC[dir][i].Phi()  );
+        	  h_Psi3[dir][i][cent] -> Fill( 1.0/3.0 * Q3vecTPC[dir][i].Phi()  ); 
 
-            h_Psi2[l][i][cent] -> Fill( 1.0/2.0 * Q2vec[l][i].Phi()  );
-            h_Psi3[l][i][cent] -> Fill( 1.0/3.0 * Q3vec[l][i].Phi()  );
-
-            for(Int_t j =0; j < 4; j++) {
-              tp_sinPsi2[l][i][j] -> Fill(RunID, cent, TMath::Sin( (Double_t)(j+1)*Q2vec[l][i].Phi() ) );
-              tp_cosPsi2[l][i][j] -> Fill(RunID, cent, TMath::Cos( (Double_t)(j+1)*Q2vec[l][i].Phi() ) );
-              tp_sinPsi3[l][i][j] -> Fill(RunID, cent, TMath::Sin( (Double_t)(j+1)*Q3vec[l][i].Phi() ) ); 
-              tp_cosPsi3[l][i][j] -> Fill(RunID, cent, TMath::Cos( (Double_t)(j+1)*Q3vec[l][i].Phi() ) );
+        	  for(Int_t j =0; j < 4; j++) {
+              tp_sinPsi2[dir][i][j] -> Fill(RunID, cent, TMath::Sin( (Double_t)(j+1)*Q2vecTPC[dir][i].Phi() ) );
+              tp_cosPsi2[dir][i][j] -> Fill(RunID, cent, TMath::Cos( (Double_t)(j+1)*Q2vecTPC[dir][i].Phi() ) );
+              tp_sinPsi3[dir][i][j] -> Fill(RunID, cent, TMath::Sin( (Double_t)(j+1)*Q3vecTPC[dir][i].Phi() ) ); 
+              tp_cosPsi3[dir][i][j] -> Fill(RunID, cent, TMath::Cos( (Double_t)(j+1)*Q3vecTPC[dir][i].Phi() ) );
             }
+   		      
           }
-          // Fill BBc and ZDC
-          if( Q2vec[l][i].Mod() != 0. && Q3vec[l][i].Mod() != 0. && i > 5) {
-            h_Qx2[l][i][cent] -> Fill( Q2vec[l][i].X() );
-            h_Qy2[l][i][cent] -> Fill( Q2vec[l][i].Y() );
-            h_Qx3[l][i][cent] -> Fill( Q3vec[l][i].X() );
-            h_Qy3[l][i][cent] -> Fill( Q3vec[l][i].Y() );
-
-            h_Psi2[l][i][cent] -> Fill( 1.0/2.0 * Q2vec[l][i].Phi()  );
-            h_Psi3[l][i][cent] -> Fill( 1.0/3.0 * Q3vec[l][i].Phi()  );
-
-            for(Int_t j =0; j < 4; j++) { 
-              tp_sinPsi2[l][i][j] -> Fill(RunID, cent, TMath::Sin( (Double_t)(j+1)*Q2vec[l][i].Phi() ) );
-              tp_cosPsi2[l][i][j] -> Fill(RunID, cent, TMath::Cos( (Double_t)(j+1)*Q2vec[l][i].Phi() ) ); 
-              tp_sinPsi3[l][i][j] -> Fill(RunID, cent, TMath::Sin( (Double_t)(j+1)*Q3vec[l][i].Phi() ) );
-              tp_cosPsi3[l][i][j] -> Fill(RunID, cent, TMath::Cos( (Double_t)(j+1)*Q3vec[l][i].Phi() ) );
-            }
-          }           
-        } //for(Int_t i = 0; i < n-1; i++)  
+        } //for(Int_t i = 0; i < n; i++)  
 
         for(Int_t det = 0; det < 2; det++) {
-          if( Q1vec[l][det].Mod() != 0. ) {
-            h_Qx1[l][det][cent] -> Fill( Q1vec[l][det].X() );
-            h_Qy1[l][det][cent] -> Fill( Q1vec[l][det].Y() );
+          if( Q1vec[det][dir].Mod() != 0. ) {
+            h_Qx1[det][dir][cent] -> Fill( Q1vec[det][dir].X() );
+            h_Qy1[det][dir][cent] -> Fill( Q1vec[det][dir].Y() );
 
-            h_Psi1[l][det][cent] -> Fill( Q1vec[l][det].Phi() );
+            h_Psi1[det][dir][cent] -> Fill( Q1vec[det][dir].Phi() );
 
             for(Int_t j = 0; j < 20; j++) {
-              tp_sinPsi1[l][det][j] -> Fill(RunID, cent, TMath::Sin( (Double_t)(j+1)*Q1vec[l][det].Phi() ) );
-              tp_cosPsi1[l][det][j] -> Fill(RunID, cent, TMath::Cos( (Double_t)(j+1)*Q1vec[l][det].Phi() ) ); 
+              tp_sinPsi1[det][dir][j] -> Fill(RunID, cent, TMath::Sin( (Double_t)(j+1)*Q1vec[det][dir].Phi() ) );
+              tp_cosPsi1[det][dir][j] -> Fill(RunID, cent, TMath::Cos( (Double_t)(j+1)*Q1vec[det][dir].Phi() ) ); 
             }
           }
         }
 
-      } //for(Int_t l = 0; l < 2; l ++)
-		} //if( strncmp(mode, "rec",3)==0 )
+      }// for(Int_t dir = 0; dir < 3; dir++)
+
+	} //if( strncmp(mode, "rec",3)==0 )
 
 	/*////////////////////////////////////////////////////////////////////////////////////////*/
  /*___________________________FLATTENING AND FLOW MODE_____________________________________*/
@@ -1118,25 +1155,25 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
 		if( strncmp(mode, "flow",4)==0 ){
 
 			TFile *f1 = new TFile(Form("/mnt/pool/1/aspovarov/basov/test/OUT/NoRe_%s.root",energy),"READ");
-	    TProfile2D *tpQx1[2][2], *tpQy1[2][2];
-	    TProfile2D *tpQx2[2][n], *tpQy2[2][n], *tpQx3[2][n], *tpQy3[2][n];
-	    for(Int_t l = 0; l < 2; l++) {   
+	    TProfile2D *tpQx1[2][3], *tpQy1[2][3];
+	    TProfile2D *tpQx2[3][n], *tpQy2[3][n], *tpQx3[3][n], *tpQy3[3][n];
+	    for(Int_t dir = 0; dir < 3; dir++) {
 	      for(Int_t i = 0; i < n; i++) {
-	        tpQx2[l][i] = (TProfile2D*) f1 -> Get( Form("tp_Qx2%s%s",direction[l],ngap[i]) );
-	        tpQx3[l][i] = (TProfile2D*) f1 -> Get( Form("tp_Qx3%s%s",direction[l],ngap[i]) );
-	        tpQy2[l][i] = (TProfile2D*) f1 -> Get( Form("tp_Qy2%s%s",direction[l],ngap[i]) );
-	        tpQy3[l][i] = (TProfile2D*) f1 -> Get( Form("tp_Qy3%s%s",direction[l],ngap[i]) );
+	        tpQx2[dir][i] = (TProfile2D*) f1 -> Get( Form("tp_Qx2%s%s",direction[dir],ngap[i]) );
+	        tpQx3[dir][i] = (TProfile2D*) f1 -> Get( Form("tp_Qx3%s%s",direction[dir],ngap[i]) );
+	        tpQy2[dir][i] = (TProfile2D*) f1 -> Get( Form("tp_Qy2%s%s",direction[dir],ngap[i]) );
+	        tpQy3[dir][i] = (TProfile2D*) f1 -> Get( Form("tp_Qy3%s%s",direction[dir],ngap[i]) );
 	      }
 	      for(Int_t det = 0; det < 2; det++) {
-	        tpQx1[l][det] = (TProfile2D*) f1 -> Get( Form("tp_Qx1%s%s",direction[l],ngap[det+6]) );
-	        tpQy1[l][det] = (TProfile2D*) f1 -> Get( Form("tp_Qy1%s%s",direction[l],ngap[det+6]) );
+	        tpQx1[det][dir] = (TProfile2D*) f1 -> Get( Form("tp_Qx1%s%s",detector[det+1],direction[dir]) );
+	        tpQy1[det][dir] = (TProfile2D*) f1 -> Get( Form("tp_Qy1%s%s",detector[det+1],direction[dir]) );
 	      }
 	    }
 
 	    TFile *f2 = new TFile(Form("/mnt/pool/1/aspovarov/basov/test/OUT/Re_%s.root",energy),"READ");
-	    TProfile2D *tpsinPsi1[2][2][20], *tpcosPsi1[2][2][20];
-	    TProfile2D *tpsinPsi2[2][n][4], *tpcosPsi2[2][n][4], *tpsinPsi3[2][n][4], *tpcosPsi3[2][n][4];
-	    for(Int_t l = 0; l < 2; l++) {
+	    TProfile2D *tpsinPsi1[2][3][20], *tpcosPsi1[2][3][20];
+	    TProfile2D *tpsinPsi2[3][n][4], *tpcosPsi2[3][n][4], *tpsinPsi3[3][n][4], *tpcosPsi3[3][n][4];
+	    for(Int_t l = 0; l < 3; l++) {
 	      for(Int_t i = 0; i < n; i++) {
 	        for(Int_t j = 0; j < 4; j++) {
 	          tpsinPsi2[l][i][j] = (TProfile2D*) f2 -> Get( Form("tp_%isinPsi2%s%s",j+1,direction[l],ngap[i]) );
@@ -1147,8 +1184,8 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
 	      }
 	      for(Int_t det = 0; det < 2; det++) {
 	        for(Int_t j = 0; j < 20; j++) { 
-	          tpsinPsi1[l][det][j] = (TProfile2D*) f2 -> Get( Form("tp_%isinPsi1%s%s",j+1,direction[l],ngap[det+6]) );
-	          tpcosPsi1[l][det][j] = (TProfile2D*) f2 -> Get( Form("tp_%icosPsi1%s%s",j+1,direction[l],ngap[det+6]) );
+	          tpsinPsi1[det][l][j] = (TProfile2D*) f2 -> Get( Form("tp_%isinPsi1%s%s",j+1,detector[det+1],direction[l]) );
+	          tpcosPsi1[det][l][j] = (TProfile2D*) f2 -> Get( Form("tp_%icosPsi1%s%s",j+1,detector[det+1],direction[l]) );
 	        }
 	      }
 	    }
@@ -1156,147 +1193,128 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
       Double_t sinPsi1 = 0., cosPsi1 = 0., sinPsi2 = 0., cosPsi2 = 0., sinPsi3 = 0., cosPsi3 = 0.;
       Double_t dPsi1 = 0., dPsi2 = 0., dPsi3 = 0.;
 
-      for(Int_t l = 0; l < 2; l++) { 
-        for(Int_t det = 0; det < 2; det++) {
-          Q1vec[l][det].Set(0.,0.);
-          Psi1[l][det] = 0.;
-        }
-        for(Int_t i = 0; i < n-1; i++) {
-          Q2vec[l][i].Set(0.,0.);
-          Q3vec[l][i].Set(0.,0.);
-          Psi2[l][i] = 0.;
-          Psi3[l][i] = 0.;
-        }
-      }
+      for(Int_t dir = 0; dir < 3; dir++) {
+    		for(Int_t det = 0; det < 2; det++) {
+    			Q1vec[det][dir].Set(0.,0.);
+    		}
+  			
+  			for(Int_t i = 0; i < n; i++) {
+  				Q2vecTPC[dir][i].Set(0.,0.);
+  				Q3vecTPC[dir][i].Set(0.,0.);
+  			}
+  		}
 
       for(Int_t dir = 0; dir < 2; dir++) {
-        Q1vec[dir][0] = CalculateBBCQVec(event, dir, 1.0);
-        Q1vec[dir][1] = CalculateZDCQVec(event, dir);
+      	Q1vec[0][dir] = CalculateBBCQVec(event, dir, 1.0);
+        Q1vec[1][dir] = CalculateZDCQVec(event, dir);
       }
+      Q1vec[0][2] = Q1vec[0][1] - Q1vec[0][0];
+      Q1vec[1][2] = Q1vec[1][1] - Q1vec[1][0];
 
-      for(Int_t l = 0; l < 2; l++) {
-        Q2vec[l][6] = CalculateBBCQVec(event, l, 2.0);
-        Q3vec[l][6] = CalculateBBCQVec(event, l, 3.0);
-      }
-      CalculateTPCQVec(Q2vec, Q3vec, dst, n-2, DCA_EVENT);
+      CalculateTPCQVec(Q2vecTPC, Q3vecTPC, dst, n, DCA_EVENT);
 
       RunID = event -> runId();
       cent = event -> cent9();
 
-      Recentering(Q1vec,Q2vec,Q3vec,RunID,cent,tpQx1,tpQy1,tpQx2,tpQy2,tpQx3,tpQy3);
+      Recentering(Q1vec,Q2vecTPC,Q3vecTPC,RunID,cent,tpQx1,tpQy1,tpQx2,tpQy2,tpQx3,tpQy3);
 
-      for(Int_t l = 0; l < 2; l ++) { 
+      for(Int_t dir = 0; dir < 3; dir ++) {
+        for(Int_t i = 0; i < n; i++) {
+          if( Q2vecTPC[dir][i].Mod() != 0. && Q3vecTPC[dir][i].Mod() != 0.) {
+            h_Qx2[dir][i][cent] -> Fill( Q2vecTPC[dir][i].X() );
+            h_Qy2[dir][i][cent] -> Fill( Q2vecTPC[dir][i].Y() );
+            h_Qx3[dir][i][cent] -> Fill( Q3vecTPC[dir][i].X() );
+            h_Qy3[dir][i][cent] -> Fill( Q3vecTPC[dir][i].Y() );
 
-        for(Int_t i = 0; i < n-1; i++) {  
-          // Fill only TPC
-          if( Q2vec[l][i].Mod() != 0. && Q3vec[l][i].Mod() != 0. && i < 6) {
-            h_Qx2[l][i][cent] -> Fill( Q2vec[l][i].X() );
-            h_Qy2[l][i][cent] -> Fill( Q2vec[l][i].Y() );
-            h_Qx3[l][i][cent] -> Fill( Q3vec[l][i].X() );
-            h_Qy3[l][i][cent] -> Fill( Q3vec[l][i].Y() );
+            Psi2TPC[dir][i] = 1.0/2.0 * Q2vecTPC[dir][i].Phi();
+            Psi3TPC[dir][i] = 1.0/3.0 * Q3vecTPC[dir][i].Phi();
 
-            Psi2[l][i] = 1.0/2.0 * Q2vec[l][i].Phi();
-            Psi3[l][i] = 1.0/3.0 * Q3vec[l][i].Phi();
           }
-          // Fill BBc and ZDC
-          if( Q2vec[l][i].Mod() != 0. && Q3vec[l][i].Mod() != 0. && i > 5) {
-            h_Qx2[l][i][cent] -> Fill( Q2vec[l][i].X() );
-            h_Qy2[l][i][cent] -> Fill( Q2vec[l][i].Y() );
-            h_Qx3[l][i][cent] -> Fill( Q3vec[l][i].X() );
-            h_Qy3[l][i][cent] -> Fill( Q3vec[l][i].Y() );
-
-            Psi2[l][i] = 1.0/2.0 * Q2vec[l][i].Phi();
-            Psi3[l][i] = 1.0/3.0 * Q3vec[l][i].Phi();
-          }       
-        } //for(Int_t i = 0; i < n-1; i++)
+        } //for(Int_t i = 0; i < n; i++)  
 
         for(Int_t det = 0; det < 2; det++) {
-          if( Q1vec[l][det].Mod() != 0. ) {
-            h_Qx1[l][det][cent] -> Fill( Q1vec[l][det].X() );
-            h_Qy1[l][det][cent] -> Fill( Q1vec[l][det].Y() );
+          if( Q1vec[det][dir].Mod() != 0. ) {
+            h_Qx1[det][dir][cent] -> Fill( Q1vec[det][dir].X() );
+            h_Qy1[det][dir][cent] -> Fill( Q1vec[det][dir].Y() );
 
-            Psi1[l][det] = Q1vec[l][det].Phi();
+            Psi1[det][dir] = Q1vec[det][dir].Phi();
+
           }
-        }  
-      
-      } //for(Int_t l = 0; l < 2; l ++)   
+        }
+
+      }// for(Int_t dir = 0; dir < 3; dir++)
 
       // Flattening stage 
-      for(Int_t l = 0; l < 2; l++) {
+      for(Int_t dir = 0; dir < 3; dir++) {
 
       	for(Int_t det = 0; det < 2; det++) {
-          if( Q1vec[l][det].Mod() != 0. ) {
+          if( Q1vec[det][dir].Mod() != 0. ) {
             for(Int_t j = 0; j < 20; j++) { 
                
-            	sinPsi1 = tpsinPsi1[l][det][j]->GetBinContent( tpsinPsi1[l][det][j]->FindBin(RunID, cent) );
-              cosPsi1 = tpcosPsi1[l][det][j]->GetBinContent( tpcosPsi1[l][det][j]->FindBin(RunID, cent) );
+            	sinPsi1 = tpsinPsi1[det][dir][j]->GetBinContent( tpsinPsi1[det][dir][j]->FindBin(RunID, cent) );
+              cosPsi1 = tpcosPsi1[det][dir][j]->GetBinContent( tpcosPsi1[det][dir][j]->FindBin(RunID, cent) );
             
-              dPsi1 += -2.0*( sinPsi1 * TMath::Cos( (Double_t)(j+1)*Psi1[l][det] ) )/( (Double_t)(j+1) ) 
-                       +2.0*( cosPsi1 * TMath::Sin( (Double_t)(j+1)*Psi1[l][det] ) )/( (Double_t)(j+1) );
+              dPsi1 += -2.0*( sinPsi1 * TMath::Cos( (Double_t)(j+1)*Psi1[det][dir] ) )/( (Double_t)(j+1) ) 
+                       +2.0*( cosPsi1 * TMath::Sin( (Double_t)(j+1)*Psi1[det][dir] ) )/( (Double_t)(j+1) );
             }
-            Psi1[l][det] += dPsi1;
+            Psi1[det][dir] += dPsi1;
             dPsi1 = 0.;
           } 
         }//for(Int_t det = 0; det < 2; det++)
 
         for(Int_t i = 0; i < n; i++) {
-          if( Q2vec[l][i].Mod() != 0. && Q3vec[l][i].Mod() != 0. ) {
+          if( Q2vecTPC[dir][i].Mod() != 0. && Q3vecTPC[dir][i].Mod() != 0.) {
             for(Int_t k = 0; k < 4; k++) {
 
-              sinPsi2 = tpsinPsi2[l][i][k]->GetBinContent( tpsinPsi2[l][i][k] -> FindBin( RunID, cent ) );
-              cosPsi2 = tpcosPsi2[l][i][k]->GetBinContent( tpcosPsi2[l][i][k] -> FindBin( RunID, cent ) );
-              sinPsi3 = tpsinPsi3[l][i][k]->GetBinContent( tpsinPsi3[l][i][k] -> FindBin( RunID, cent ) );
-              cosPsi3 = tpcosPsi3[l][i][k]->GetBinContent( tpcosPsi3[l][i][k] -> FindBin( RunID, cent ) );
+              sinPsi2 = tpsinPsi2[dir][i][k]->GetBinContent( tpsinPsi2[dir][i][k] -> FindBin( RunID, cent ) );
+              cosPsi2 = tpcosPsi2[dir][i][k]->GetBinContent( tpcosPsi2[dir][i][k] -> FindBin( RunID, cent ) );
+              sinPsi3 = tpsinPsi3[dir][i][k]->GetBinContent( tpsinPsi3[dir][i][k] -> FindBin( RunID, cent ) );
+              cosPsi3 = tpcosPsi3[dir][i][k]->GetBinContent( tpcosPsi3[dir][i][k] -> FindBin( RunID, cent ) );
 
-              dPsi2 += -2.0*( sinPsi2 * TMath::Cos( (Double_t)(k+1)*2.0*Psi2[l][i] ) )/( 2.0*(Double_t)(k+1) ) 
-                       +2.0*( cosPsi2 * TMath::Sin( (Double_t)(k+1)*2.0*Psi2[l][i] ) )/( 2.0*(Double_t)(k+1) );
+              dPsi2 += -2.0*( sinPsi2 * TMath::Cos( (Double_t)(k+1)*2.0*Psi2TPC[dir][i] ) )/( 2.0*(Double_t)(k+1) ) 
+                       +2.0*( cosPsi2 * TMath::Sin( (Double_t)(k+1)*2.0*Psi2TPC[dir][i] ) )/( 2.0*(Double_t)(k+1) );
 
-              dPsi3 += -2.0*( sinPsi3 * TMath::Cos( (Double_t)(k+1)*3.0*Psi3[l][i] ) )/( 3.0*(Double_t)(k+1) ) 
-                       +2.0*( cosPsi3 * TMath::Sin( (Double_t)(k+1)*3.0*Psi3[l][i] ) )/( 3.0*(Double_t)(k+1) );
+              dPsi3 += -2.0*( sinPsi3 * TMath::Cos( (Double_t)(k+1)*3.0*Psi3TPC[dir][i] ) )/( 3.0*(Double_t)(k+1) ) 
+                       +2.0*( cosPsi3 * TMath::Sin( (Double_t)(k+1)*3.0*Psi3TPC[dir][i] ) )/( 3.0*(Double_t)(k+1) );
 
             } //for(Int_t k = 0; k < 4; k++)
-            Psi2[l][i] += dPsi2;
-            Psi3[l][i] += dPsi3;
+            Psi2TPC[dir][i] += dPsi2;
+            Psi3TPC[dir][i] += dPsi3;
             dPsi2 = dPsi3 = 0.;
           } 
-        }//for(Int_t i = 0; i < n; i++)
+        }// for(Int_t i = 0; i < n; i++)
 
-      } //for(Int_t l = 0; l < 2; l++)
+      }// for(Int_t dir = 0; dir < 3; dir++) {
 
-      for(Int_t l = 0; l < 2; l ++) {  
+      for(Int_t dir = 0; dir < 3; dir++) {  
 
       	for(Int_t det = 0; det < 2; det++) {
-          if(Q1vec[l][det].Mod() != 0.) {
-            h_Psi1[l][det][cent] -> Fill( Psi1[l][det] );
+          if( Q1vec[det][dir].Mod() != 0. ) {
+            h_Psi1[det][dir][cent] -> Fill( Psi1[det][dir] );
           }
         }
 
-        for(Int_t i = 0; i < n-1; i++) {  
-        
-          // Fill only TPC
-          if(Q2vec[l][i].Mod() != 0. && Q3vec[l][i].Mod() != 0. && i < 6) {
-            h_Psi2[l][i][cent] -> Fill( Psi2[l][i]  );
-            h_Psi3[l][i][cent] -> Fill( Psi3[l][i]  );
+        for(Int_t i = 0; i < n; i++) {  
+       
+          if( Q2vecTPC[dir][i].Mod() != 0. && Q3vecTPC[dir][i].Mod() != 0.) {
+            h_Psi2[dir][i][cent] -> Fill( Psi2TPC[dir][i]  );
+            h_Psi3[dir][i][cent] -> Fill( Psi3TPC[dir][i]  );
           }
-          // Fill BBc and ZDC
-          if(Q2vec[l][i].Mod() != 0. && Q3vec[l][i].Mod() != 0. && i > 5) {
-            h_Psi2[l][i][cent] -> Fill( Psi2[l][i]  );
-            h_Psi3[l][i][cent] -> Fill( Psi3[l][i]  );
-          }
-        } //for(Int_t i = 0; i < n-1; i++)
+          
+        }// for(Int_t i = 0; i < n; i++)
 
-      } //for(Int_t l = 0; l < 2; l ++)  
+      }// for(Int_t dir = 0; dir < 3; dir++)  
 
       for(Int_t det = 0; det < 2; det++) {
-        if(Q1vec[0][det].Mod() != 0. && Q1vec[1][det].Mod() != 0.) {
-          tp_SqRes1[det] -> Fill(cent, TMath::Cos( (Psi1[1][det] - Psi1[0][det]) ) );
+        if(Q1vec[det][0].Mod() != 0. && Q1vec[det][1].Mod() != 0.) {
+          tp_SqRes1[det] -> Fill(cent, TMath::Cos( (Psi1[det][1] - Psi1[det][0]) ) );
         }
       }  
 
-      for(Int_t i = 0; i < n-1; i++) {
-        if(Q2vec[0][i].Mod() != 0. && Q3vec[0][i].Mod() != 0. && Q2vec[1][i].Mod() != 0. && Q3vec[1][i].Mod() != 0.) {
-          tp_SqRes2[i] -> Fill(cent, TMath::Cos( 2*(Psi2[1][i] - Psi2[0][i]) ) );
-          tp_SqRes3[i] -> Fill(cent, TMath::Cos( 3*(Psi3[1][i] - Psi3[0][i]) ) );
+      for(Int_t i = 0; i < n; i++) {
+        if(Q2vecTPC[0][i].Mod() != 0. && Q3vecTPC[0][i].Mod() != 0. && Q2vecTPC[1][i].Mod() != 0. && Q3vecTPC[1][i].Mod() != 0.) {
+          tp_SqRes2[i] -> Fill(cent, TMath::Cos( 2*(Psi2TPC[1][i] - Psi2TPC[0][i]) ) );
+          tp_SqRes3[i] -> Fill(cent, TMath::Cos( 3*(Psi3TPC[1][i] - Psi3TPC[0][i]) ) );
         }
       }
 
@@ -1333,208 +1351,171 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
         
         Double_t v1 = 0.,v2 = 0., v3 = 0.;
 
-        if( femtoTrack -> eta() < 0 ) {
-        	v1 = TMath::Cos( Phi - Psi1[0][0] );
-          tp_v1[0][cent] -> Fill( femtoTrack -> eta(), v1);
-          v1 = TMath::Cos( Phi - Psi1[0][1] );
-          tp_v1[1][cent] -> Fill( femtoTrack -> eta(), v1);
+        for(Int_t det = 0; det < 2; det++) {
+
+        	v1 = TMath::Cos( Phi - Psi1[det][2] );
+          tp_v1comb[det][cent] -> Fill( femtoTrack -> eta(), v1);
+
+	        if( femtoTrack -> eta() < 0 ) {
+	        	v1 = TMath::Cos( Phi - Psi1[det][1] );
+	          tp_v1ew[det][cent] -> Fill( femtoTrack -> eta(), v1);
+	        }
+	        if( femtoTrack -> eta() > 0 ) {
+	          v1 = TMath::Cos( Phi - Psi1[det][0] );
+	          tp_v1ew[det][cent] -> Fill( femtoTrack -> eta(), v1);
+	        }
+  
         }
-        if( femtoTrack -> eta() > 0 ) {
-          v1 = TMath::Cos( Phi - Psi1[1][0] );
-          tp_v1[0][cent] -> Fill( femtoTrack -> eta(), v1);
-          v1 = TMath::Cos( Phi - Psi1[1][1] );
-          tp_v1[1][cent] -> Fill( femtoTrack -> eta(), v1);
-        }
 
-        for(Int_t det = 0; det < 3; det++) {
-          for(Int_t eta = 0; eta < n-2; eta++) {
+        for(Int_t eta = 0; eta < n; eta++) {
 
-            if( det == 0 ) {
-              if( femtoTrack -> eta() < -etagap[eta] ) {
-                v2 = TMath::Cos( 2.0*(Phi - Psi2[1][eta]) );
-                v3 = TMath::Cos( 3.0*(Phi - Psi3[1][eta]) );
+        	if( abs( femtoTrack -> eta() ) > etagap[eta] ) {
+          	v2 = TMath::Cos( 2.0*(Phi - Psi2TPC[2][eta]) );
+          	v3 = TMath::Cos( 3.0*(Phi - Psi3TPC[2][eta]) );
 
-                if( eta < 3 ){
-                  if( TMath::Abs( pVtx.Z() ) < sys_VtxZ){
-                    tp_v2_sys[det][eta][0]->Fill(pt, (Double_t)cent, v2, w );
-                    tp_v3_sys[det][eta][0]->Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_hadrons_sys[det][eta][0] -> Fill(pt,(Double_t)cent,pt);
-                  }
-                  if( femtoTrack -> nHits() > sys_nHits){
-                    tp_v2_sys[det][eta][1]->Fill(pt, (Double_t)cent, v2, w );
-                    tp_v3_sys[det][eta][1]->Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_hadrons_sys[det][eta][1] -> Fill(pt,(Double_t)cent,pt);
-                  }
-                  if( femtoTrack->gDCA(pVtx).Mag() < sys_DCA){
-                    tp_v2_sys[det][eta][2]->Fill(pt, (Double_t)cent, v2, w );
-                    tp_v3_sys[det][eta][2]->Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_hadrons_sys[det][eta][2] -> Fill(pt,(Double_t)cent,pt);
-                  }  
-                }
+          	tp_v2hadrTPC[eta][1] -> Fill(pt, (Double_t)cent, v2, w );
+	        	tp_v3hadrTPC[eta][1] -> Fill(pt, (Double_t)cent, v3, w );
+	        	tp_meanPt_hadrons[eta] -> Fill(pt,(Double_t)cent,pt);
 
-                if( femtoTrack->gDCA(pVtx).Mag() < DCA_FLOW){
-                  tp_v2cent[det][eta] -> Fill( (Double_t)cent, v2, w );
-                  tp_v3cent[det][eta] -> Fill( (Double_t)cent, v3, w );
-                  tp_v2[det][eta] -> Fill(pt, (Double_t)cent, v2, w );
-                  tp_v3[det][eta] -> Fill(pt, (Double_t)cent, v3, w );
-                  tp_meanPt_hadrons[det][eta] -> Fill(pt,(Double_t)cent,pt);
-                }
-                
+	          if( TMath::Abs( pVtx.Z() ) < sys_VtxZ) {
+		        	tp_v2hadrTPCsys[eta][1][0] -> Fill(pt, (Double_t)cent, v2, w );
+		        	tp_v3hadrTPCsys[eta][1][0] -> Fill(pt, (Double_t)cent, v3, w );
+		        	tp_meanPt_hadrons_sys[eta][0] -> Fill(pt,(Double_t)cent,pt);
+		        }
+						if( femtoTrack -> nHits() > sys_nHits)  {
+							tp_v2hadrTPCsys[eta][1][1] -> Fill(pt, (Double_t)cent, v2, w );
+							tp_v3hadrTPCsys[eta][1][1] -> Fill(pt, (Double_t)cent, v3, w );
+							tp_meanPt_hadrons_sys[eta][1] -> Fill(pt,(Double_t)cent,pt);
+						}
+						if( femtoTrack->gDCA(pVtx).Mag() < sys_DCA) {
+							tp_v2hadrTPCsys[eta][1][2] -> Fill(pt, (Double_t)cent, v2, w );
+							tp_v3hadrTPCsys[eta][1][2] -> Fill(pt, (Double_t)cent, v3, w );
+							tp_meanPt_hadrons_sys[eta][2] -> Fill(pt,(Double_t)cent,pt);
+						}
 
-                for(Int_t part = 0; part < 3; part++) {
+						for(Int_t part = 0; part < 3; part++) {
+							if( TMath::Abs( nSigma[part] ) < nSigm && SqM > SqMdown[part] && SqM < SqMup[part]) {
+								if( femtoTrack->gDCA(pVtx).Mag() < DCA_FLOW){
+									tp_v2pidTPC[eta][1][q_charge][part] -> Fill(pt, (Double_t)cent, v2, w );
+									tp_v3pidTPC[eta][1][q_charge][part] -> Fill(pt, (Double_t)cent, v3, w );
+									tp_meanPt_PID[eta][q_charge][part] -> Fill(pt,(Double_t)cent,pt);
+								}
+								if( TMath::Abs( pVtx.Z() ) < sys_VtxZ) {
+									tp_v2pidTPCsys[eta][1][q_charge][part][0] -> Fill(pt, (Double_t)cent, v2, w );
+									tp_v3pidTPCsys[eta][1][q_charge][part][0] -> Fill(pt, (Double_t)cent, v3, w );
+									tp_meanPt_PID_sys[eta][q_charge][part][0] -> Fill(pt,(Double_t)cent,pt);
+								}
+								if( femtoTrack -> nHits() > sys_nHits) {
+									tp_v2pidTPCsys[eta][1][q_charge][part][1] -> Fill(pt, (Double_t)cent, v2, w );
+									tp_v3pidTPCsys[eta][1][q_charge][part][1] -> Fill(pt, (Double_t)cent, v3, w );
+									tp_meanPt_PID_sys[eta][q_charge][part][1] -> Fill(pt,(Double_t)cent,pt);
+								}
+								if( femtoTrack -> gDCA(pVtx).Mag() < sys_DCA) {
+									tp_v2pidTPCsys[eta][1][q_charge][part][2] -> Fill(pt, (Double_t)cent, v2, w );
+									tp_v3pidTPCsys[eta][1][q_charge][part][2] -> Fill(pt, (Double_t)cent, v3, w );
+									tp_meanPt_PID_sys[eta][q_charge][part][2] -> Fill(pt,(Double_t)cent,pt);
+								}
+							}
+						}// for(Int_t part = 0; part < 3; part++)
+					}// if( abs( femtoTrack -> eta() ) > etagap[eta] 
 
-                  if( TMath::Abs( nSigma[part] ) < nSigm && SqM > SqMdown[part] && SqM < SqMup[part]) {
-                    if( femtoTrack->gDCA(pVtx).Mag() < DCA_FLOW){
-                      tp_v2PID[q_charge][part][det][eta] -> Fill(pt, (Double_t)cent, v2, w );
-                      tp_v3PID[q_charge][part][det][eta] -> Fill(pt, (Double_t)cent, v3, w );
-                      tp_meanPt_PID[q_charge][part][det][eta] -> Fill(pt,(Double_t)cent,pt);
-                    }
-            
-                    if(eta<3){
-                      if( TMath::Abs( pVtx.Z() ) < sys_VtxZ){
-                        tp_v2PID_sys[q_charge][part][det][eta][0] -> Fill(pt, (Double_t)cent, v2, w );
-                        tp_v3PID_sys[q_charge][part][det][eta][0] -> Fill(pt, (Double_t)cent, v3, w );
-                        tp_meanPt_PID_sys[q_charge][part][det][eta][0] -> Fill(pt,(Double_t)cent,pt);
-                      }
-                      if( femtoTrack -> nHits() > sys_nHits){
-                        tp_v2PID_sys[q_charge][part][det][eta][1] -> Fill(pt, (Double_t)cent, v2, w );
-                        tp_v3PID_sys[q_charge][part][det][eta][1] -> Fill(pt, (Double_t)cent, v3, w );
-                        tp_meanPt_PID_sys[q_charge][part][det][eta][1] -> Fill(pt,(Double_t)cent,pt);
-                      }
-                      if( femtoTrack->gDCA(pVtx).Mag() < sys_DCA){
-                        tp_v2PID_sys[q_charge][part][det][eta][2] -> Fill(pt, (Double_t)cent, v2, w );
-                        tp_v3PID_sys[q_charge][part][det][eta][2] -> Fill(pt, (Double_t)cent, v3, w );
-                        tp_meanPt_PID_sys[q_charge][part][det][eta][2] -> Fill(pt,(Double_t)cent,pt);
-                      }  
-                    }
-                  }
+					if( femtoTrack -> eta() < -etagap[eta] ) {
 
-                } //for(Int_t part = 0; part < 3; part++)
+	        	v2 = TMath::Cos( 2.0*(Phi - Psi2TPC[1][eta]) );
+          	v3 = TMath::Cos( 3.0*(Phi - Psi3TPC[1][eta]) );
 
-              } //if( femtoTrack -> eta() < -etagap[eta] )
+	        	if( femtoTrack->gDCA(pVtx).Mag() < DCA_FLOW) {
+	        		tp_v2hadrTPC[eta][0] -> Fill(pt, (Double_t)cent, v2, w );
+	        		tp_v3hadrTPC[eta][0] -> Fill(pt, (Double_t)cent, v3, w );
+	        	}
+	        	if( TMath::Abs( pVtx.Z() ) < sys_VtxZ) {
+	        		tp_v2hadrTPCsys[eta][0][0] -> Fill(pt, (Double_t)cent, v2, w );
+	        		tp_v3hadrTPCsys[eta][0][0] -> Fill(pt, (Double_t)cent, v3, w );
+	        	}
+						if( femtoTrack -> nHits() > sys_nHits)  {
+							tp_v2hadrTPCsys[eta][0][1] -> Fill(pt, (Double_t)cent, v2, w );
+							tp_v3hadrTPCsys[eta][0][1] -> Fill(pt, (Double_t)cent, v3, w );
+						}
+						if( femtoTrack->gDCA(pVtx).Mag() < sys_DCA) {
+							tp_v2hadrTPCsys[eta][0][2] -> Fill(pt, (Double_t)cent, v2, w );
+							tp_v3hadrTPCsys[eta][0][2] -> Fill(pt, (Double_t)cent, v3, w );
+						}
 
-              if( femtoTrack -> eta() > etagap[eta] ) {
-                v2 = TMath::Cos( 2.0*(Phi - Psi2[0][eta]) );
-                v3 = TMath::Cos( 3.0*(Phi - Psi3[0][eta]) );
+						for(Int_t part = 0; part < 3; part++) {
+							if( TMath::Abs( nSigma[part] ) < nSigm && SqM > SqMdown[part] && SqM < SqMup[part]) {
+								if( femtoTrack->gDCA(pVtx).Mag() < DCA_FLOW){
+									tp_v2pidTPC[eta][0][q_charge][part] -> Fill(pt, (Double_t)cent, v2, w );
+									tp_v3pidTPC[eta][0][q_charge][part] -> Fill(pt, (Double_t)cent, v3, w );
+								}
+								if( TMath::Abs( pVtx.Z() ) < sys_VtxZ) {
+									tp_v2pidTPCsys[eta][0][q_charge][part][0] -> Fill(pt, (Double_t)cent, v2, w );
+									tp_v3pidTPCsys[eta][0][q_charge][part][0] -> Fill(pt, (Double_t)cent, v3, w );
+								}
+								if( femtoTrack -> nHits() > sys_nHits) {
+									tp_v2pidTPCsys[eta][0][q_charge][part][1] -> Fill(pt, (Double_t)cent, v2, w );
+									tp_v3pidTPCsys[eta][0][q_charge][part][1] -> Fill(pt, (Double_t)cent, v3, w );
+								}
+								if( femtoTrack->gDCA(pVtx).Mag() < sys_DCA) {
+									tp_v2pidTPCsys[eta][0][q_charge][part][2] -> Fill(pt, (Double_t)cent, v2, w );
+									tp_v3pidTPCsys[eta][0][q_charge][part][2] -> Fill(pt, (Double_t)cent, v3, w );
+								}
+							}
+						}// for(Int_t part = 0; part < 3; part++)
 
-                if(eta<3){
-                  if( femtoTrack -> nHits() > sys_nHits){
-                    tp_v2_sys[det][eta][0]->Fill(pt, (Double_t)cent, v2, w );
-                    tp_v3_sys[det][eta][0]->Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_hadrons_sys[det][eta][0] -> Fill(pt,(Double_t)cent,pt);
-                  }
-                  if( TMath::Abs( pVtx.Z() ) < sys_VtxZ){
-                    tp_v2_sys[det][eta][1]->Fill(pt, (Double_t)cent, v2, w );
-                    tp_v3_sys[det][eta][1]->Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_hadrons_sys[det][eta][1] -> Fill(pt,(Double_t)cent,pt);
-                  }
-                  if( femtoTrack->gDCA(pVtx).Mag() < sys_DCA){
-                    tp_v2_sys[det][eta][2]->Fill(pt, (Double_t)cent, v2, w );
-                    tp_v3_sys[det][eta][2]->Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_hadrons_sys[det][eta][2] -> Fill(pt,(Double_t)cent,pt);
-                  }  
-                }
+	        }// if( femtoTrack -> eta() < -etagap[eta] )
 
-                if( femtoTrack->gDCA(pVtx).Mag() < DCA_FLOW){
-                  tp_v2cent[det][eta] -> Fill( (Double_t)cent, v2, w );
-                  tp_v3cent[det][eta] -> Fill( (Double_t)cent, v3, w );
-                  tp_v2[det][eta] -> Fill(pt, (Double_t)cent, v2, w );
-                  tp_v3[det][eta] -> Fill(pt, (Double_t)cent, v3, w );
-                }
-                
-                tp_meanPt_hadrons[det][eta] -> Fill(pt,(Double_t)cent,pt);
+	        if( femtoTrack -> eta() > etagap[eta] ) {
 
-                for(Int_t part = 0; part < 3; part++) {
-                  if( TMath::Abs( nSigma[part] ) < nSigm && SqM > SqMdown[part] && SqM < SqMup[part]) {
-                    if( femtoTrack->gDCA(pVtx).Mag() < DCA_FLOW){
-                      tp_v2PID[q_charge][part][det][eta] -> Fill(pt, (Double_t)cent, v2, w );
-                      tp_v3PID[q_charge][part][det][eta] -> Fill(pt, (Double_t)cent, v3, w );
-                      tp_meanPt_PID[q_charge][part][det][eta] -> Fill(pt,(Double_t)cent,pt);
-                    }
-            
-                    if(eta<3){
-                      if( TMath::Abs( pVtx.Z() ) < sys_VtxZ){
-                        tp_v2PID_sys[q_charge][part][det][eta][0] -> Fill(pt, (Double_t)cent, v2, w );
-                        tp_v3PID_sys[q_charge][part][det][eta][0] -> Fill(pt, (Double_t)cent, v3, w );
-                        tp_meanPt_PID_sys[q_charge][part][det][eta][0] -> Fill(pt,(Double_t)cent,pt);
-                      }
-                      if( femtoTrack -> nHits() > sys_nHits){
-                        tp_v2PID_sys[q_charge][part][det][eta][1] -> Fill(pt, (Double_t)cent, v2, w );
-                        tp_v3PID_sys[q_charge][part][det][eta][1] -> Fill(pt, (Double_t)cent, v3, w );
-                        tp_meanPt_PID_sys[q_charge][part][det][eta][1] -> Fill(pt,(Double_t)cent,pt);
-                      }
-                      if( femtoTrack->gDCA(pVtx).Mag() < sys_DCA){
-                        tp_v2PID_sys[q_charge][part][det][eta][2] -> Fill(pt, (Double_t)cent, v2, w );
-                        tp_v3PID_sys[q_charge][part][det][eta][2] -> Fill(pt, (Double_t)cent, v3, w );
-                        tp_meanPt_PID_sys[q_charge][part][det][eta][2] -> Fill(pt,(Double_t)cent,pt);
-                      }  
-                    }
-                  }
-                }
-              } //if( femtoTrack -> eta() > etagap[eta] )
+	        	v2 = TMath::Cos( 2.0*(Phi - Psi2TPC[0][eta]) );
+          	v3 = TMath::Cos( 3.0*(Phi - Psi3TPC[0][eta]) );
 
-            } //if( det== 0)
+          	if( femtoTrack->gDCA(pVtx).Mag() < DCA_FLOW) {
+          		tp_v2hadrTPC[eta][0] -> Fill(pt, (Double_t)cent, v2, w );
+	        		tp_v3hadrTPC[eta][0] -> Fill(pt, (Double_t)cent, v3, w );
+	        	}
+	        	if( TMath::Abs( pVtx.Z() ) < sys_VtxZ) {
+	        		tp_v2hadrTPCsys[eta][0][0] -> Fill(pt, (Double_t)cent, v2, w );
+	        		tp_v3hadrTPCsys[eta][0][0] -> Fill(pt, (Double_t)cent, v3, w );
+	        	}
+						if( femtoTrack -> nHits() > sys_nHits) {
+							tp_v2hadrTPCsys[eta][0][1] -> Fill(pt, (Double_t)cent, v2, w );
+							tp_v3hadrTPCsys[eta][0][1] -> Fill(pt, (Double_t)cent, v3, w );
+						}
+						if( femtoTrack->gDCA(pVtx).Mag() < sys_DCA) {
+							tp_v2hadrTPCsys[eta][0][2] -> Fill(pt, (Double_t)cent, v2, w );
+							tp_v3hadrTPCsys[eta][0][2] -> Fill(pt, (Double_t)cent, v3, w );
+						}
 
-            if( det==1 ) {
-              if(femtoTrack -> eta() < -etagap[eta] ) {
-                v2 = TMath::Cos( 2.0*(Phi - Psi2[1][6]) );
-                v3 = TMath::Cos( 3.0*(Phi - Psi3[1][6]) );
+						for(Int_t part = 0; part < 3; part++) {
+							if( TMath::Abs( nSigma[part] ) < nSigm && SqM > SqMdown[part] && SqM < SqMup[part]) {
+								if( femtoTrack->gDCA(pVtx).Mag() < DCA_FLOW){
+									tp_v2pidTPC[eta][0][q_charge][part] -> Fill(pt, (Double_t)cent, v2, w );
+									tp_v3pidTPC[eta][0][q_charge][part] -> Fill(pt, (Double_t)cent, v3, w );
+								}
+								if( TMath::Abs( pVtx.Z() ) < sys_VtxZ) {
+									tp_v2pidTPCsys[eta][0][q_charge][part][0] -> Fill(pt, (Double_t)cent, v2, w );
+									tp_v3pidTPCsys[eta][0][q_charge][part][0] -> Fill(pt, (Double_t)cent, v3, w );
+								}
+								if( femtoTrack -> nHits() > sys_nHits) {
+									tp_v2pidTPCsys[eta][0][q_charge][part][1] -> Fill(pt, (Double_t)cent, v2, w );
+									tp_v3pidTPCsys[eta][0][q_charge][part][1] -> Fill(pt, (Double_t)cent, v3, w );
+								}
+								if( femtoTrack->gDCA(pVtx).Mag() < sys_DCA) {
+									tp_v2pidTPCsys[eta][0][q_charge][part][2] -> Fill(pt, (Double_t)cent, v2, w );
+									tp_v3pidTPCsys[eta][0][q_charge][part][2] -> Fill(pt, (Double_t)cent, v3, w );
+								}
+							}
+						}// for(Int_t part = 0; part < 3; part++)
+	        		
+	        }// if( femtoTrack -> eta() > etagap[eta] ) {
 
-                tp_v2cent[det][eta] -> Fill( (Double_t)cent, v2, w );
-                tp_v3cent[det][eta] -> Fill( (Double_t)cent, v3, w );
-                tp_v2[det][eta] -> Fill(pt, (Double_t)cent, v2, w );
-                tp_v3[det][eta] -> Fill(pt, (Double_t)cent, v3, w );
-
-                tp_meanPt_hadrons[det][eta] -> Fill(pt,(Double_t)cent,pt);
-
-                for(Int_t part = 0; part < 3; part++) {
-                  if( TMath::Abs( nSigma[part] ) < nSigm && q > 0 && SqM > SqMdown[part] && SqM < SqMup[part]) {
-                    tp_v2PID[0][part][det][eta] -> Fill(pt, (Double_t)cent, v2, w );
-                    tp_v3PID[0][part][det][eta] -> Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_PID[0][part][det][eta] -> Fill(pt,(Double_t)cent,pt);
-                  }
-                  if( TMath::Abs( nSigma[part] ) < nSigm && q < 0 && SqM > SqMdown[part] && SqM < SqMup[part]) {
-                    tp_v2PID[1][part][det][eta] -> Fill(pt, (Double_t)cent, v2, w );
-                    tp_v3PID[1][part][det][eta] -> Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_PID[1][part][det][eta] -> Fill(pt,(Double_t)cent,pt);
-                  }
-                }
-              }
-
-              if(femtoTrack -> eta() > etagap[eta] ) {
-                v2 = TMath::Cos( 2.0*(Phi - Psi2[0][6]) );
-                v3 = TMath::Cos( 3.0*(Phi - Psi3[0][6]) );
-
-                tp_v2cent[det][eta] -> Fill( (Double_t)cent, v2, w );
-                tp_v3cent[det][eta] -> Fill( (Double_t)cent, v3, w );
-                tp_v2[det][eta] -> Fill(pt, (Double_t)cent, v2, w );
-                tp_v3[det][eta] -> Fill(pt, (Double_t)cent, v3, w );
-
-                for(Int_t part = 0; part < 3; part++) {
-                  if( TMath::Abs( nSigma[part] ) < nSigm && q > 0 && SqM > SqMdown[part] && SqM < SqMup[part]) {
-                    tp_v2PID[0][part][det][eta] -> Fill(pt, (Double_t)cent, v2, w );
-                    tp_v3PID[0][part][det][eta] -> Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_PID[0][part][det][eta] -> Fill(pt,(Double_t)cent,pt);
-                  }
-                  if( TMath::Abs( nSigma[part] ) < nSigm && q < 0 && SqM > SqMdown[part] && SqM < SqMup[part]) {
-                    tp_v2PID[1][part][det][eta] -> Fill(pt, (Double_t)cent, v2, w );
-                    tp_v3PID[1][part][det][eta] -> Fill(pt, (Double_t)cent, v3, w );
-                    tp_meanPt_PID[1][part][det][eta] -> Fill(pt,(Double_t)cent,pt);
-                  }
-                }
-              }
-
-            }// if( det == 1 )
-          }// for(Int_t eta = 0; eta < n-2; eta++)
-        }// for(Int_t det = 0; det < 3; det++)
+        }// for(Int_t eta = 0; eta < n; eta++)
 
       }// for(Int_t iTrk=0; iTrk<nTracks; iTrk++)
+
 		}// if(strncmp(mode, "flow", 4))
 
 	}// for(Long64_t iEvent=0; iEvent<events2read; iEvent++)
-
-	BadRuns.clear();
-  std::cout << "BadRun clean!" << std::endl;
 
   outFile->Write();
   outFile->Close();
@@ -1603,45 +1584,45 @@ Bool_t isGoodTrackFlow(StFemtoEvent *event, StFemtoTrack *femtoTrack, Double_t D
 }// isGoodTrackFlow(){}
 
 //**********************RECENTERING**********************//
-void Recentering( TVector2 Q1vec[][2], TVector2 Q2vec[][n], TVector2 Q3vec[][n], Int_t RunID, Int_t cent,TProfile2D *tpQx1[][2], 
-TProfile2D *tpQy1[][2], TProfile2D *tpQx2[][n], TProfile2D *tpQy2[][n],TProfile2D *tpQx3[][n], TProfile2D *tpQy3[][n] ) {
+void Recentering( TVector2 Q1vec[][3], TVector2 Q2vec[][n], TVector2 Q3vec[][n], Int_t RunID, Int_t cent,TProfile2D *tpQx1[][3], 
+TProfile2D *tpQy1[][3], TProfile2D *tpQx2[][n], TProfile2D *tpQy2[][n],TProfile2D *tpQx3[][n], TProfile2D *tpQy3[][n] ) {
     
   TVector2 Q1mean, Q2mean, Q3mean;
 
-  for(Int_t l = 0; l < 2; l++) {
+  for(Int_t dir = 0; dir < 3; dir++) {
 
-    for(Int_t i = 0; i < n; i++) {
+    for(Int_t eta = 0; eta < n; eta++) {
       Q2mean.Set(0.,0.);
       Q3mean.Set(0.,0.);
 
-      Q2mean.Set( tpQx2[l][i] -> GetBinContent( tpQx2[l][i] -> FindBin( (Double_t)RunID, (Double_t)cent )),
-                  tpQy2[l][i] -> GetBinContent( tpQy2[l][i] -> FindBin( (Double_t)RunID, (Double_t)cent )) );
-      Q3mean.Set( tpQx3[l][i] -> GetBinContent( tpQx3[l][i] -> FindBin( (Double_t)RunID, (Double_t)cent )),
-                  tpQy3[l][i] -> GetBinContent( tpQy3[l][i] -> FindBin( (Double_t)RunID, (Double_t)cent )) );
+      Q2mean.Set( tpQx2[dir][eta] -> GetBinContent( tpQx2[dir][eta] -> FindBin( (Double_t)RunID, (Double_t)cent )),
+                  tpQy2[dir][eta] -> GetBinContent( tpQy2[dir][eta] -> FindBin( (Double_t)RunID, (Double_t)cent )) );
+      Q3mean.Set( tpQx3[dir][eta] -> GetBinContent( tpQx3[dir][eta] -> FindBin( (Double_t)RunID, (Double_t)cent )),
+                  tpQy3[dir][eta] -> GetBinContent( tpQy3[dir][eta] -> FindBin( (Double_t)RunID, (Double_t)cent )) );
       
-      if( Q2vec[l][i].Mod() != 0.) { 
-        Q2vec[l][i] -= Q2mean;
+      if( Q2vec[dir][eta].Mod() != 0.) { 
+        Q2vec[dir][eta] -= Q2mean;
       }
-      if( Q3vec[l][i].Mod() != 0.) {
-        Q3vec[l][i] -= Q3mean;
+      if( Q3vec[dir][eta].Mod() != 0.) {
+        Q3vec[dir][eta] -= Q3mean;
       }
-
     }
+
     for(Int_t det = 0; det < 2; det++) { 
       Q1mean.Set(0.,0.);
-      Q1mean.Set( tpQx1[l][det] -> GetBinContent( tpQx1[l][det] -> FindBin( (Double_t)RunID, (Double_t)cent )),
-                  tpQy1[l][det] -> GetBinContent( tpQy1[l][det] -> FindBin( (Double_t)RunID, (Double_t)cent )) );
-      if( Q1vec[l][det].Mod() != 0.) { 
-        Q1vec[l][det] -= Q1mean;
+      Q1mean.Set( tpQx1[det][dir] -> GetBinContent( tpQx1[det][dir] -> FindBin( (Double_t)RunID, (Double_t)cent )),
+                  tpQy1[det][dir] -> GetBinContent( tpQy1[det][dir] -> FindBin( (Double_t)RunID, (Double_t)cent )) );
+      if( Q1vec[det][dir].Mod() != 0.) { 
+        Q1vec[det][dir] -= Q1mean;
       }
     }
 
-  }// for(Int_t l = 0; l < 2; l++)
+  }// for(Int_t dir = 0; dir < 3; dir++)
   
 }// void Recentering(){}
 
 //**********************CALCULATE Q-VEC BY TPC**********************//
-void CalculateTPCQVec( TVector2 Q2vec[][8], TVector2 Q3vec[][8], StFemtoDst *dst, Int_t ngap, Double_t DCA_EVENT) {
+void CalculateTPCQVec( TVector2 Q2vec[][n], TVector2 Q3vec[][n], StFemtoDst *dst, Int_t ngap, Double_t DCA_EVENT) {
   // 0 - this is east 
   // 1 - this is west 
   Double_t gap[6] = {0.05, 0.075, 0.1, 0.15, 0.2, 0.5};
@@ -1650,9 +1631,9 @@ void CalculateTPCQVec( TVector2 Q2vec[][8], TVector2 Q3vec[][8], StFemtoDst *dst
   // Retrieve event information
   StFemtoEvent *event = dst->event();
 
-  for(Int_t i = 0; i < 2; i++) {
-    for(Int_t j = 0; j < ngap; j++) { 
-      w[i][j] = 0.;
+  for(Int_t dir = 0; dir < 2; dir++) {
+    for(Int_t eta = 0; eta < ngap; eta++) { 
+      w[dir][eta] = 0.;
     }
   }
 
@@ -1666,33 +1647,35 @@ void CalculateTPCQVec( TVector2 Q2vec[][8], TVector2 Q3vec[][8], StFemtoDst *dst
 
     if( !isGoodTrack(event, femtoTrack, DCA_EVENT) ) continue; 
 
-    for(Int_t i = 0; i < ngap; i++) {
+    for(Int_t eta = 0; eta < ngap; eta++) {
 
-      if( femtoTrack -> eta() < -gap[i] ) {
-        Q2vec[0][i].Set( Q2vec[0][i].X() + femtoTrack -> pt() * cos(2.0 * femtoTrack -> phi() ),
-                         Q2vec[0][i].Y() + femtoTrack -> pt() * sin(2.0 * femtoTrack -> phi() ) );
-        Q3vec[0][i].Set( Q3vec[0][i].X() + femtoTrack -> pt() * cos(3.0 * femtoTrack -> phi() ),
-                         Q3vec[0][i].Y() + femtoTrack -> pt() * sin(3.0 * femtoTrack -> phi() ) );
-        w[0][i]++; 
+      if( femtoTrack -> eta() < -gap[eta] ) {
+        Q2vec[0][eta].Set( Q2vec[0][eta].X() + femtoTrack -> pt() * cos(2.0 * femtoTrack -> phi() ),
+                         	 Q2vec[0][eta].Y() + femtoTrack -> pt() * sin(2.0 * femtoTrack -> phi() ) );
+        Q3vec[0][eta].Set( Q3vec[0][eta].X() + femtoTrack -> pt() * cos(3.0 * femtoTrack -> phi() ),
+                           Q3vec[0][eta].Y() + femtoTrack -> pt() * sin(3.0 * femtoTrack -> phi() ) );
+        w[0][eta]++; 
       }
       
-      if( femtoTrack -> eta() > gap[i] ) {
-        Q2vec[1][i].Set( Q2vec[1][i].X() + femtoTrack -> pt() * cos(2.0 * femtoTrack -> phi()),
-                         Q2vec[1][i].Y() + femtoTrack -> pt() * sin(2.0 * femtoTrack -> phi() ) );
-        Q3vec[1][i].Set( Q3vec[1][i].X() + femtoTrack -> pt() * cos(3.0 * femtoTrack -> phi() ),
-                         Q3vec[1][i].Y() + femtoTrack -> pt() * sin(3.0 * femtoTrack -> phi() ) );
-        w[1][i]++;
+      if( femtoTrack -> eta() > gap[eta] ) {
+        Q2vec[1][eta].Set( Q2vec[1][eta].X() + femtoTrack -> pt() * cos(2.0 * femtoTrack -> phi()),
+                           Q2vec[1][eta].Y() + femtoTrack -> pt() * sin(2.0 * femtoTrack -> phi() ) );
+        Q3vec[1][eta].Set( Q3vec[1][eta].X() + femtoTrack -> pt() * cos(3.0 * femtoTrack -> phi() ),
+                           Q3vec[1][eta].Y() + femtoTrack -> pt() * sin(3.0 * femtoTrack -> phi() ) );
+        w[1][eta]++;
       }
     }
   }// track loop end
 
-  for(Int_t j = 0; j < 2; j++) {
-    for(Int_t i = 0; i < ngap; i++) {
-      if( w[j][i] != 0 ) {
-        Q2vec[j][i].Set( Q2vec[j][i].X()/w[j][i], Q2vec[j][i].Y()/w[j][i]);
-        Q3vec[j][i].Set( Q3vec[j][i].X()/w[j][i], Q3vec[j][i].Y()/w[j][i]);
+	for(Int_t eta = 0; eta < ngap; eta++) {
+  	for(Int_t dir = 0; dir < 2; dir++) {   
+      if( w[dir][eta] != 0 ) {
+        Q2vec[dir][eta].Set( Q2vec[dir][eta].X()/w[dir][eta], Q2vec[dir][eta].Y()/w[dir][eta]);
+        Q3vec[dir][eta].Set( Q3vec[dir][eta].X()/w[dir][eta], Q3vec[dir][eta].Y()/w[dir][eta]);
       }
     }
+		Q2vec[2][eta] = Q2vec[1][eta] - Q2vec[0][eta];
+  	Q3vec[2][eta] = Q3vec[1][eta] - Q3vec[0][eta];
   }
 
 }// void CalculateTPCQVec(){}
