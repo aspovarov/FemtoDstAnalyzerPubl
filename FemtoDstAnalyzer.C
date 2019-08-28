@@ -336,6 +336,12 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
 
   TFile *outFile = new TFile(outFileName, "RECREATE");
 
+  TFile *f1, *f2;
+	TProfile2D *tpQx1[2][3], *tpQy1[2][3];
+	TProfile2D *tpQx2[3][n], *tpQy2[3][n], *tpQx3[3][n], *tpQy3[3][n];
+	TProfile2D *tpsinPsi1[2][3][20], *tpcosPsi1[2][3][20];
+	TProfile2D *tpsinPsi2[3][n][4], *tpcosPsi2[3][n][4], *tpsinPsi3[3][n][4], *tpcosPsi3[3][n][4];
+
   //histogram for Q-vectors and event planes with eta-gap and without error
   TH1D *h_Qx1[2][3][c], *h_Qy1[2][3][c]; 
   TH1D *h_Qx2[3][n][c], *h_Qy2[3][n][c], *h_Qx3[3][n][c], *h_Qy3[3][n][c];
@@ -653,6 +659,20 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
 
 	    }// for(Int_t l = 0; l < 2; l++)
 
+	    f1 = new TFile(Form("/mnt/pool/1/aspovarov/basov/test/OUT/NoRe_%s.root",energy),"READ");
+	    for(Int_t dir = 0; dir < 3; dir++) {
+	      for(Int_t i = 0; i < n; i++) {
+	        tpQx2[dir][i] = (TProfile2D*) f1 -> Get( Form("tp_Qx2%s%s",direction[dir],ngap[i]) );
+	        tpQx3[dir][i] = (TProfile2D*) f1 -> Get( Form("tp_Qx3%s%s",direction[dir],ngap[i]) );
+	        tpQy2[dir][i] = (TProfile2D*) f1 -> Get( Form("tp_Qy2%s%s",direction[dir],ngap[i]) );
+	        tpQy3[dir][i] = (TProfile2D*) f1 -> Get( Form("tp_Qy3%s%s",direction[dir],ngap[i]) );
+	      }
+	      for(Int_t det = 0; det < 2; det++) {
+	        tpQx1[det][dir] = (TProfile2D*) f1 -> Get( Form("tp_Qx1%s%s",detector[det+1],direction[dir]) );
+	        tpQy1[det][dir] = (TProfile2D*) f1 -> Get( Form("tp_Qy1%s%s",detector[det+1],direction[dir]) );
+	      }
+	    }
+
 	}// if( strncmp(mode, "rec",3) == 0 )
 
 
@@ -800,10 +820,44 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
 
 	  }// for(Int_t i = 0; i < n; i++)
 
+	  	f1 = new TFile(Form("/mnt/pool/1/aspovarov/basov/test/OUT/NoRe_%s.root",energy),"READ");
+	    for(Int_t dir = 0; dir < 3; dir++) {
+	      for(Int_t i = 0; i < n; i++) {
+	        tpQx2[dir][i] = (TProfile2D*) f1 -> Get( Form("tp_Qx2%s%s",direction[dir],ngap[i]) );
+	        tpQx3[dir][i] = (TProfile2D*) f1 -> Get( Form("tp_Qx3%s%s",direction[dir],ngap[i]) );
+	        tpQy2[dir][i] = (TProfile2D*) f1 -> Get( Form("tp_Qy2%s%s",direction[dir],ngap[i]) );
+	        tpQy3[dir][i] = (TProfile2D*) f1 -> Get( Form("tp_Qy3%s%s",direction[dir],ngap[i]) );
+	      }
+	      for(Int_t det = 0; det < 2; det++) {
+	        tpQx1[det][dir] = (TProfile2D*) f1 -> Get( Form("tp_Qx1%s%s",detector[det+1],direction[dir]) );
+	        tpQy1[det][dir] = (TProfile2D*) f1 -> Get( Form("tp_Qy1%s%s",detector[det+1],direction[dir]) );
+	      }
+	    }
+
+	    f2 = new TFile(Form("/mnt/pool/1/aspovarov/basov/test/OUT/Re_%s.root",energy),"READ");
+	    for(Int_t l = 0; l < 3; l++) {
+	      for(Int_t i = 0; i < n; i++) {
+	        for(Int_t j = 0; j < 4; j++) {
+	          tpsinPsi2[l][i][j] = (TProfile2D*) f2 -> Get( Form("tp_%isinPsi2%s%s",j+1,direction[l],ngap[i]) );
+	          tpcosPsi2[l][i][j] = (TProfile2D*) f2 -> Get( Form("tp_%icosPsi2%s%s",j+1,direction[l],ngap[i]) );
+	          tpsinPsi3[l][i][j] = (TProfile2D*) f2 -> Get( Form("tp_%isinPsi3%s%s",j+1,direction[l],ngap[i]) );
+	          tpcosPsi3[l][i][j] = (TProfile2D*) f2 -> Get( Form("tp_%icosPsi3%s%s",j+1,direction[l],ngap[i]) );
+	        }
+	      }
+	      for(Int_t det = 0; det < 2; det++) {
+	        for(Int_t j = 0; j < 20; j++) { 
+	          tpsinPsi1[det][l][j] = (TProfile2D*) f2 -> Get( Form("tp_%isinPsi1%s%s",j+1,detector[det+1],direction[l]) );
+	          tpcosPsi1[det][l][j] = (TProfile2D*) f2 -> Get( Form("tp_%icosPsi1%s%s",j+1,detector[det+1],direction[l]) );
+	        }
+	      }
+	    }
+
 	}// if( strncmp(mode, "flow",4)==0 )
 
 
-	//loop by event
+	/*////////////////////////////////////////////////////////////////////////////////////////*/
+ /*________________________________START OF EVENT LOOP_____________________________________*/
+/*////////////////////////////////////////////////////////////////////////////////////////*/
 	for(Long64_t iEvent=0; iEvent<events2read; iEvent++) {
 
   	if ( iEvent % 10000 == 0) {
@@ -1069,21 +1123,7 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
 /*////////////////////////////////////////////////////////////////////////////////////////*/
 		if( strncmp(mode, "rec",3)==0 ) {
 
-			TFile *f1 = new TFile(Form("/mnt/pool/1/aspovarov/basov/test/OUT/NoRe_%s.root",energy),"READ");
-	    TProfile2D *tpQx1[2][3], *tpQy1[2][3];
-	    TProfile2D *tpQx2[3][n], *tpQy2[3][n], *tpQx3[3][n], *tpQy3[3][n];
-	    for(Int_t dir = 0; dir < 3; dir++) {
-	      for(Int_t i = 0; i < n; i++) {
-	        tpQx2[dir][i] = (TProfile2D*) f1 -> Get( Form("tp_Qx2%s%s",direction[dir],ngap[i]) );
-	        tpQx3[dir][i] = (TProfile2D*) f1 -> Get( Form("tp_Qx3%s%s",direction[dir],ngap[i]) );
-	        tpQy2[dir][i] = (TProfile2D*) f1 -> Get( Form("tp_Qy2%s%s",direction[dir],ngap[i]) );
-	        tpQy3[dir][i] = (TProfile2D*) f1 -> Get( Form("tp_Qy3%s%s",direction[dir],ngap[i]) );
-	      }
-	      for(Int_t det = 0; det < 2; det++) {
-	        tpQx1[det][dir] = (TProfile2D*) f1 -> Get( Form("tp_Qx1%s%s",detector[det+1],direction[dir]) );
-	        tpQy1[det][dir] = (TProfile2D*) f1 -> Get( Form("tp_Qy1%s%s",detector[det+1],direction[dir]) );
-	      }
-	    }
+			
 
 	    for(Int_t dir = 0; dir < 3; dir++) {
     		for(Int_t det = 0; det < 2; det++) {
@@ -1154,41 +1194,7 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
 /*////////////////////////////////////////////////////////////////////////////////////////*/
 		if( strncmp(mode, "flow",4)==0 ){
 
-			TFile *f1 = new TFile(Form("/mnt/pool/1/aspovarov/basov/test/OUT/NoRe_%s.root",energy),"READ");
-	    TProfile2D *tpQx1[2][3], *tpQy1[2][3];
-	    TProfile2D *tpQx2[3][n], *tpQy2[3][n], *tpQx3[3][n], *tpQy3[3][n];
-	    for(Int_t dir = 0; dir < 3; dir++) {
-	      for(Int_t i = 0; i < n; i++) {
-	        tpQx2[dir][i] = (TProfile2D*) f1 -> Get( Form("tp_Qx2%s%s",direction[dir],ngap[i]) );
-	        tpQx3[dir][i] = (TProfile2D*) f1 -> Get( Form("tp_Qx3%s%s",direction[dir],ngap[i]) );
-	        tpQy2[dir][i] = (TProfile2D*) f1 -> Get( Form("tp_Qy2%s%s",direction[dir],ngap[i]) );
-	        tpQy3[dir][i] = (TProfile2D*) f1 -> Get( Form("tp_Qy3%s%s",direction[dir],ngap[i]) );
-	      }
-	      for(Int_t det = 0; det < 2; det++) {
-	        tpQx1[det][dir] = (TProfile2D*) f1 -> Get( Form("tp_Qx1%s%s",detector[det+1],direction[dir]) );
-	        tpQy1[det][dir] = (TProfile2D*) f1 -> Get( Form("tp_Qy1%s%s",detector[det+1],direction[dir]) );
-	      }
-	    }
-
-	    TFile *f2 = new TFile(Form("/mnt/pool/1/aspovarov/basov/test/OUT/Re_%s.root",energy),"READ");
-	    TProfile2D *tpsinPsi1[2][3][20], *tpcosPsi1[2][3][20];
-	    TProfile2D *tpsinPsi2[3][n][4], *tpcosPsi2[3][n][4], *tpsinPsi3[3][n][4], *tpcosPsi3[3][n][4];
-	    for(Int_t l = 0; l < 3; l++) {
-	      for(Int_t i = 0; i < n; i++) {
-	        for(Int_t j = 0; j < 4; j++) {
-	          tpsinPsi2[l][i][j] = (TProfile2D*) f2 -> Get( Form("tp_%isinPsi2%s%s",j+1,direction[l],ngap[i]) );
-	          tpcosPsi2[l][i][j] = (TProfile2D*) f2 -> Get( Form("tp_%icosPsi2%s%s",j+1,direction[l],ngap[i]) );
-	          tpsinPsi3[l][i][j] = (TProfile2D*) f2 -> Get( Form("tp_%isinPsi3%s%s",j+1,direction[l],ngap[i]) );
-	          tpcosPsi3[l][i][j] = (TProfile2D*) f2 -> Get( Form("tp_%icosPsi3%s%s",j+1,direction[l],ngap[i]) );
-	        }
-	      }
-	      for(Int_t det = 0; det < 2; det++) {
-	        for(Int_t j = 0; j < 20; j++) { 
-	          tpsinPsi1[det][l][j] = (TProfile2D*) f2 -> Get( Form("tp_%isinPsi1%s%s",j+1,detector[det+1],direction[l]) );
-	          tpcosPsi1[det][l][j] = (TProfile2D*) f2 -> Get( Form("tp_%icosPsi1%s%s",j+1,detector[det+1],direction[l]) );
-	        }
-	      }
-	    }
+			
 	    
       Double_t sinPsi1 = 0., cosPsi1 = 0., sinPsi2 = 0., cosPsi2 = 0., sinPsi3 = 0., cosPsi3 = 0.;
       Double_t dPsi1 = 0., dPsi2 = 0., dPsi3 = 0.;
@@ -1369,7 +1375,7 @@ void FemtoDstAnalyzer(const Char_t *inFile = "st_physics_12150008_raw_4030001.fe
 
         for(Int_t eta = 0; eta < n; eta++) {
 
-        	if( abs( femtoTrack -> eta() ) > etagap[eta] ) {
+        	if( femtoTrack -> eta() > abs( etagap[eta] ) ) {
           	v2 = TMath::Cos( 2.0*(Phi - Psi2TPC[2][eta]) );
           	v3 = TMath::Cos( 3.0*(Phi - Psi3TPC[2][eta]) );
 
