@@ -8,6 +8,9 @@
  ///////////////////////////////////////////////////////////
 
 Hello, world!
+test for "master" branch
+
+
                    __________________direction: 0 - east, 1 - west, 2 - combined;
 		 		  |            
 TVector2 Q1vec[2][3];
