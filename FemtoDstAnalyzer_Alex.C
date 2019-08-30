@@ -346,8 +346,13 @@ void FemtoDstAnalyzer_Alex(const Char_t *inFile = "st_physics_12150008_raw_40300
   TH1D *h_Qx2[3][n][c], *h_Qy2[3][n][c], *h_Qx3[3][n][c], *h_Qy3[3][n][c];
   TH1D *h_Psi1[2][3][c],*h_Psi2[3][n][c], *h_Psi3[3][n][c];
   //histogram for check resolution
-  TH1D *h_sinPsi2TPC[3][n][c], *h_sinPsi3TPC[3][n][c];
-  TH1D *h_cosPsi2TPC[3][n][c], *h_cosPsi3TPC[3][n][c];
+  TH1D *h_sinPsi1[2][3][c], *h_sinPsi2TPC[3][n][c], *h_sinPsi3TPC[3][n][c];
+  TH1D *h_cosPsi1[2][3][c], *h_cosPsi2TPC[3][n][c], *h_cosPsi3TPC[3][n][c];
+
+  TH1D *h_sinPsiPhi1[2][3][c], *h_sinPsiPhi2TPC[2][n][c], *h_sinPsiPhi3TPC[2][n][c];
+  TH1D *h_cosPsiPhi1[2][3][c], *h_cosPsiPhi2TPC[2][n][c], *h_cosPsiPhi3TPC[2][n][c];
+
+  //TProfile2D for check mean sin and cos Psi
 
   if( strncmp(mode, "QA",2) != 0 ) {
     // loop by direction
@@ -374,13 +379,13 @@ void FemtoDstAnalyzer_Alex(const Char_t *inFile = "st_physics_12150008_raw_40300
               Form("#psi_{3} %s %s cent %i;#psi_{3}",direction[l],gap[i],j),100,-0.05,2.15);
 
           h_sinPsi2TPC[l][i][j] = new TH1D(Form("h_sinPsi2TPC%s%scent%i",direction[l],ngap[i],j),
-              Form("sin(#psi_{2})  %s %s cent %i;Q_{x}",direction[l],gap[i],j),201,-1,1);
+              Form("sin(#psi_{2})  %s %s cent %i;sin(#Psi_{2})",direction[l],gap[i],j),201,-1.0,1.0);
           h_cosPsi2TPC[l][i][j] = new TH1D(Form("h_cosPsi2TPC%s%scent%i",direction[l],ngap[i],j),
-              Form("cos(#psi_{2})  %s %s cent %i;Q_{x}",direction[l],gap[i],j),201,-1,1);
+              Form("cos(#psi_{2})  %s %s cent %i;sin(#Psi_{2})",direction[l],gap[i],j),201,-1.0,1.0);
           h_sinPsi3TPC[l][i][j] = new TH1D(Form("h_sinPsi3TPC%s%scent%i",direction[l],ngap[i],j),
-              Form("sin(#psi_{3})  %s %s cent %i;Q_{x}",direction[l],gap[i],j),201,-1,1);
+              Form("sin(#psi_{3})  %s %s cent %i;sin(#Psi_{3})",direction[l],gap[i],j),201,-1.0,1.0);
           h_cosPsi3TPC[l][i][j] = new TH1D(Form("h_cosPsi3TPC%s%scent%i",direction[l],ngap[i],j),
-              Form("cos(#psi_{3})  %s %s cent %i;Q_{x}",direction[l],gap[i],j),201,-1,1);
+              Form("cos(#psi_{3})  %s %s cent %i;sin(#Psi_{3})",direction[l],gap[i],j),201,-1.0,1.0);
 
         }// loop by n
 
@@ -393,10 +398,10 @@ void FemtoDstAnalyzer_Alex(const Char_t *inFile = "st_physics_12150008_raw_40300
           h_Psi1[det][l][j] = new TH1D(Form("h_Psi1%s%scent%i",detector[det+1],direction[l],j),
               Form("#psi_{1} %s %s cent %i;#psi_{1}",detector[det+1],direction[l],j),200,-0.1,6.35);
 
-          h_sinPsi1[l][i][j] = new TH1D(Form("h_sinPsi1%s%scent%i",detector[det+1],direction[l],j),
-              Form("sin(#psi_{1})  %s %s cent %i;Q_{x}",detector[det+1],direction[l],j),201,-1,1);
-          h_cosPsi1[l][i][j] = new TH1D(Form("h_cosPsi1%s%scent%i",detector[det+1],direction[l],j),
-              Form("cos(#psi_{1})  %s %s cent %i;Q_{x}",detector[det+1],direction[l],j),201,-1,1);
+          h_sinPsi1[det][l][j] = new TH1D(Form("h_sinPsi1%s%scent%i",detector[det+1],direction[l],j),
+              Form("sin(#psi_{1})  %s %s cent %i;Q_{x}",detector[det+1],direction[l],j),201,-1.0,1.0);
+          h_cosPsi1[det][l][j] = new TH1D(Form("h_cosPsi1%s%scent%i",detector[det+1],direction[l],j),
+              Form("cos(#psi_{1})  %s %s cent %i;Q_{x}",detector[det+1],direction[l],j),201,-1.0,1.0);
         }
       }// loop by cent
     }// loop by direstion 
@@ -618,6 +623,10 @@ void FemtoDstAnalyzer_Alex(const Char_t *inFile = "st_physics_12150008_raw_40300
   TProfile2D *tp_sinPsi1[2][3][20], *tp_cosPsi1[2][3][20];
   TProfile2D *tp_sinPsi2[3][n][4], *tp_cosPsi2[3][n][4], *tp_sinPsi3[3][n][4], *tp_cosPsi3[3][n][4];
 
+  //***************PROFILES FOR MEAN COS AND SIN FOR PSI***************//
+  TProfile2D *tp_sinPsi2_check[3][n], *tp_cosPsi2_check[3][n], *tp_sinPsi3_check[3][n], *tp_cosPsi3_check[3][n];
+  TProfile2D *tp_sinPsi1_check[2][3], *tp_cosPsi1_check[2][3];
+  
   //***************PROFILES FOR FLATTENING AND FLOW MODE***************//
   Int_t n_sys=3; 
   // 0 - VtZ 
@@ -704,7 +713,7 @@ void FemtoDstAnalyzer_Alex(const Char_t *inFile = "st_physics_12150008_raw_40300
 
         }
 
-        //TProfile2D Q-vector chek 
+        //TProfile2D mean Q-vector chek 
         tp_fill_Qx2[l][i] = new TProfile2D(Form("tp_Qx2%s%s",direction[l],ngap[i]),
         Form("<Q_{x}> for #psi_{2} %s %s;RunID;cent",direction[l],gap[i]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
 
@@ -717,6 +726,15 @@ void FemtoDstAnalyzer_Alex(const Char_t *inFile = "st_physics_12150008_raw_40300
         tp_fill_Qy3[l][i] = new TProfile2D(Form("tp_Qy3%s%s",direction[l],ngap[i]),
         Form("<Q_{y}> for #psi_{3} %s %s;RunID;cent",direction[l],gap[i]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
 
+        // Check mean cos and sin for Psi
+        tp_sinPsi2_check[l][i] = new TProfile2D(Form("tp_check_sinPsi2%s%s",direction[l],ngap[i]),
+          Form("<sin(#psi_{2})> %s %s",direction[l],gap[i]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
+        tp_cosPsi2_check[l][i] = new TProfile2D(Form("tp_check_cosPsi2%s%s",direction[l],ngap[i]),
+          Form("<cos(#psi_{2})> %s %s",direction[l],gap[i]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
+        tp_sinPsi3_check[l][i] = new TProfile2D(Form("tp_check_sinPsi3%s%s",direction[l],ngap[i]),
+          Form("<sin(#psi_{3})> %s %s",direction[l],gap[i]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
+        tp_cosPsi3_check[l][i] = new TProfile2D(Form("tp_check_cosPsi3%s%s",direction[l],ngap[i]),
+          Form("<cos(#psi_{3})> %s %s",direction[l],gap[i]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
       }
 
       for(Int_t det = 0; det < 2; det++) {
@@ -731,9 +749,13 @@ void FemtoDstAnalyzer_Alex(const Char_t *inFile = "st_physics_12150008_raw_40300
 
         tp_fill_Qx1[det][l] = new TProfile2D(Form("tp_Qx1%s%s",detector[det+1],direction[l]),
         Form("<Q_{x}> for #psi_{1} %s %s;RunID;cent",detector[det+1],direction[l]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
-
         tp_fill_Qy1[det][l] = new TProfile2D(Form("tp_Qy1%s%s",detector[det+1],direction[l]),
         Form("<Q_{y}> for #psi_{1} %s %s;RunID;cent",detector[det+1],direction[l]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
+
+        tp_sinPsi1_check[det][l] = new TProfile2D(Form("tp_check_sinPsi1%s%s",detector[det+1],direction[l]),
+          Form("<sin(#psi_{1})> %s %s",detector[det+1],direction[l]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
+        tp_cosPsi1_check[det][l] = new TProfile2D(Form("tp_check_cosPsi1%s%s",detector[det+1],direction[l]),
+          Form("<cos(#psi_{1})> %s %s",detector[det+1],direction[l]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
 
       }
 
@@ -756,6 +778,59 @@ void FemtoDstAnalyzer_Alex(const Char_t *inFile = "st_physics_12150008_raw_40300
 	}// if( strncmp(mode, "rec",3) == 0 )
 
 	if( strncmp(mode, "flow",4) == 0 ) {
+
+    // loop by direction
+    for(Int_t l = 0; l < 2; l++) {
+      //loop by cent                                                                                                  
+      for(Int_t j = 0; j < c; j++) {
+        //loop by eta-gap + BBC and ZDC
+        for(Int_t i = 0; i < n; i++) {
+
+          h_sinPsiPhi2TPC[l][i][j] = new TH1D(Form("h_sinPsiPhi2TPC%s%scent%i",resol[l],ngap[i],j),
+              Form("sin(#phi - #psi_{2})  %s %s cent %i;Q_{x}",resol[l],gap[i],j),201,-1.0,1.0);
+          h_cosPsiPhi2TPC[l][i][j] = new TH1D(Form("h_cosPsiPhi2TPC%s%scent%i",resol[l],ngap[i],j),
+              Form("cos(#phi - #psi_{2})  %s %s cent %i;Q_{x}",resol[l],gap[i],j),201,-1.0,1.0);
+          h_sinPsiPhi3TPC[l][i][j] = new TH1D(Form("h_sinPsiPhi3TPC%s%scent%i",resol[l],ngap[i],j),
+              Form("sin(#phi - #psi_{3})  %s %s cent %i;Q_{x}",resol[l],gap[i],j),201,-1.0,1.0);
+          h_cosPsiPhi3TPC[l][i][j] = new TH1D(Form("h_cosPsiPhi3TPC%s%scent%i",resol[l],ngap[i],j),
+              Form("cos(#phi - #psi_{3})  %s %s cent %i;Q_{x}",resol[l],gap[i],j),201,-1.0,1.0);
+
+        }// loop by n
+
+        for(Int_t det = 0; det < 2; det++) {
+
+          h_sinPsiPhi1[det][l][j] = new TH1D(Form("h_sinPsiPhi1%s%scent%i",detector[det+1],resol[l],j),
+              Form("sin(#phi - #psi_{1})  %s %s cent %i;Q_{x}",detector[det+1],resol[l],j),201,-1.0,1.0);
+          h_cosPsiPhi1[det][l][j] = new TH1D(Form("h_cosPsiPhi1%s%scent%i",detector[det+1],resol[l],j),
+              Form("cos(#phi - #psi_{1})  %s %s cent %i;Q_{x}",detector[det+1],resol[l],j),201,-1.0,1.0);
+        }
+      }// loop by cent
+    }// loop by direstion 
+
+    // Check mean cos and sin for Psi
+    for(Int_t l = 0; l < 3; l++) {
+      //loop by eta-gap + BBC and ZDC
+      for(Int_t i = 0; i < n; i++) {
+
+        // Check mean cos and sin for Psi
+        tp_sinPsi2_check[l][i] = new TProfile2D(Form("tp_check_sinPsi2%s%s",direction[l],ngap[i]),
+          Form("<sin(#psi_{2})> %s %s",direction[l],gap[i]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
+        tp_cosPsi2_check[l][i] = new TProfile2D(Form("tp_check_cosPsi2%s%s",direction[l],ngap[i]),
+          Form("<cos(#psi_{2})> %s %s",direction[l],gap[i]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
+        tp_sinPsi3_check[l][i] = new TProfile2D(Form("tp_check_sinPsi3%s%s",direction[l],ngap[i]),
+          Form("<sin(#psi_{3})> %s %s",direction[l],gap[i]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
+        tp_cosPsi3_check[l][i] = new TProfile2D(Form("tp_check_cosPsi3%s%s",direction[l],ngap[i]),
+          Form("<cos(#psi_{3})> %s %s",direction[l],gap[i]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
+
+      }// loop by n
+
+      for(Int_t det = 0; det < 2; det++) {
+        tp_sinPsi1_check[det][l] = new TProfile2D(Form("tp_check_sinPsi1%s%s",detector[det+1],direction[l]),
+          Form("<sin(#psi_{1})> %s %s",detector[det+1],direction[l]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
+        tp_cosPsi1_check[det][l] = new TProfile2D(Form("tp_check_cosPsi1%s%s",detector[det+1],direction[l]),
+          Form("<cos(#psi_{1})> %s %s",detector[det+1],direction[l]),runIdBins ,runIdRange[0],runIdRange[1],9,0,9);
+      }
+    }// loop by direstion 
 
 		for(Int_t det = 0; det < 2; det++) {
 	  	tp_SqRes1[det] = new TProfile(Form("tp_SqRes1%s",detector[det+1]),
@@ -1153,7 +1228,10 @@ void FemtoDstAnalyzer_Alex(const Char_t *inFile = "st_physics_12150008_raw_40300
         	  h_Psi2[dir][i][cent] -> Fill( 1.0/2.0 * Q2vecTPC[dir][i].Phi()  );
         	  h_Psi3[dir][i][cent] -> Fill( 1.0/3.0 * Q3vecTPC[dir][i].Phi()  );
 
-
+            h_sinPsi2TPC[dir][i][cent] -> Fill(TMath::Sin( 1.0/2.0 * Q2vecTPC[dir][i].Phi() ));
+            h_cosPsi2TPC[dir][i][cent] -> Fill(TMath::Cos( 1.0/2.0 * Q2vecTPC[dir][i].Phi() ));
+            h_sinPsi3TPC[dir][i][cent] -> Fill(TMath::Sin( 1.0/3.0 * Q3vecTPC[dir][i].Phi() ));
+            h_cosPsi3TPC[dir][i][cent] -> Fill(TMath::Cos( 1.0/3.0 * Q3vecTPC[dir][i].Phi() ));
 
    		      tp_fill_Qx2[dir][i] -> Fill( (Double_t)RunID, (Double_t)cent, Q2vecTPC[dir][i].X() );
    		      tp_fill_Qy2[dir][i] -> Fill( (Double_t)RunID, (Double_t)cent, Q2vecTPC[dir][i].Y() );
@@ -1171,6 +1249,10 @@ void FemtoDstAnalyzer_Alex(const Char_t *inFile = "st_physics_12150008_raw_40300
 
             tp_fill_Qx1[det][dir] -> Fill( (Double_t)RunID, (Double_t)cent, Q1vec[det][dir].X() );
             tp_fill_Qy1[det][dir] -> Fill( (Double_t)RunID, (Double_t)cent, Q1vec[det][dir].Y() );
+
+            h_sinPsi1[det][dir][cent] -> Fill(TMath::Sin( Q1vec[det][dir].Phi() ));
+            h_cosPsi1[det][dir][cent] -> Fill(TMath::Cos( Q1vec[det][dir].Phi() ));
+
           }
         }
 
@@ -1220,10 +1302,20 @@ void FemtoDstAnalyzer_Alex(const Char_t *inFile = "st_physics_12150008_raw_40300
         	  h_Psi2[dir][i][cent] -> Fill( 1.0/2.0 * Q2vecTPC[dir][i].Phi()  );
         	  h_Psi3[dir][i][cent] -> Fill( 1.0/3.0 * Q3vecTPC[dir][i].Phi()  ); 
 
+            h_sinPsi2TPC[dir][i][cent] -> Fill(TMath::Sin( 1.0/2.0 * Q2vecTPC[dir][i].Phi() ));
+            h_cosPsi2TPC[dir][i][cent] -> Fill(TMath::Cos( 1.0/2.0 * Q2vecTPC[dir][i].Phi() ));
+            h_sinPsi3TPC[dir][i][cent] -> Fill(TMath::Sin( 1.0/3.0 * Q3vecTPC[dir][i].Phi() ));
+            h_cosPsi3TPC[dir][i][cent] -> Fill(TMath::Cos( 1.0/3.0 * Q3vecTPC[dir][i].Phi() ));
+
             tp_fill_Qx2[dir][i] -> Fill( (Double_t)RunID, (Double_t)cent, Q2vecTPC[dir][i].X() );
             tp_fill_Qy2[dir][i] -> Fill( (Double_t)RunID, (Double_t)cent, Q2vecTPC[dir][i].Y() );
             tp_fill_Qx3[dir][i] -> Fill( (Double_t)RunID, (Double_t)cent, Q3vecTPC[dir][i].X() );
             tp_fill_Qy3[dir][i] -> Fill( (Double_t)RunID, (Double_t)cent, Q3vecTPC[dir][i].Y() );
+
+            tp_sinPsi2_check[dir][i] -> Fill(RunID, cent, TMath::Sin( (1.0/2.0)*Q2vecTPC[dir][i].Phi() ));
+            tp_cosPsi2_check[dir][i] -> Fill(RunID, cent, TMath::Cos( (1.0/2.0)*Q2vecTPC[dir][i].Phi() ));
+            tp_sinPsi3_check[dir][i] -> Fill(RunID, cent, TMath::Sin( (1.0/3.0)*Q3vecTPC[dir][i].Phi() ));
+            tp_cosPsi3_check[dir][i] -> Fill(RunID, cent, TMath::Cos( (1.0/3.0)*Q3vecTPC[dir][i].Phi() ));
 
         	  for(Int_t j =0; j < 4; j++) {
               tp_sinPsi2[dir][i][j] -> Fill(RunID, cent, TMath::Sin( (Double_t)(j+1)*Q2vecTPC[dir][i].Phi() ) );
@@ -1242,8 +1334,14 @@ void FemtoDstAnalyzer_Alex(const Char_t *inFile = "st_physics_12150008_raw_40300
 
             h_Psi1[det][dir][cent] -> Fill( Q1vec[det][dir].Phi() );
 
+            h_sinPsi1[det][dir][cent] -> Fill(TMath::Sin( Q1vec[det][dir].Phi() ));
+            h_cosPsi1[det][dir][cent] -> Fill(TMath::Cos( Q1vec[det][dir].Phi() ));
+
             tp_fill_Qx1[det][dir] -> Fill( (Double_t)RunID, (Double_t)cent, Q1vec[det][dir].X() );
             tp_fill_Qy1[det][dir] -> Fill( (Double_t)RunID, (Double_t)cent, Q1vec[det][dir].Y() );
+
+            tp_sinPsi1_check[det][dir] -> Fill( (Double_t)RunID, (Double_t)cent, TMath::Sin( Q1vec[det][dir].Phi() ));
+            tp_cosPsi1_check[det][dir] -> Fill( (Double_t)RunID, (Double_t)cent, TMath::Cos( Q1vec[det][dir].Phi() ));
 
             for(Int_t j = 0; j < 20; j++) {
               tp_sinPsi1[det][dir][j] -> Fill(RunID, cent, TMath::Sin( (Double_t)(j+1)*Q1vec[det][dir].Phi() ) );
@@ -1362,6 +1460,12 @@ void FemtoDstAnalyzer_Alex(const Char_t *inFile = "st_physics_12150008_raw_40300
       	for(Int_t det = 0; det < 2; det++) {
           if( Q1vec[det][dir].Mod() != 0. ) {
             h_Psi1[det][dir][cent] -> Fill( Psi1[det][dir] );
+           
+            h_sinPsi1[det][dir][cent] -> Fill(TMath::Sin( Psi1[det][dir] ));
+            h_cosPsi1[det][dir][cent] -> Fill(TMath::Cos( Psi1[det][dir] ));
+
+            tp_sinPsi1_check[det][dir] -> Fill( (Double_t)RunID, (Double_t)cent, TMath::Sin( Psi1[det][dir] ));
+            tp_cosPsi1_check[det][dir] -> Fill( (Double_t)RunID, (Double_t)cent, TMath::Cos( Psi1[det][dir] ));
           }
         }
 
@@ -1370,6 +1474,15 @@ void FemtoDstAnalyzer_Alex(const Char_t *inFile = "st_physics_12150008_raw_40300
           if( Q2vecTPC[dir][i].Mod() != 0. && Q3vecTPC[dir][i].Mod() != 0.) {
             h_Psi2[dir][i][cent] -> Fill( Psi2TPC[dir][i]  );
             h_Psi3[dir][i][cent] -> Fill( Psi3TPC[dir][i]  );
+            h_sinPsi2TPC[dir][i][cent] -> Fill(TMath::Sin( Psi2TPC[dir][i] ));
+            h_cosPsi2TPC[dir][i][cent] -> Fill(TMath::Cos( Psi2TPC[dir][i] ));
+            h_sinPsi3TPC[dir][i][cent] -> Fill(TMath::Sin( Psi3TPC[dir][i] ));
+            h_cosPsi3TPC[dir][i][cent] -> Fill(TMath::Cos( Psi3TPC[dir][i] ));
+            tp_sinPsi2_check[dir][i] -> Fill(RunID, cent, TMath::Sin( Psi2TPC[dir][i] ));
+            tp_cosPsi2_check[dir][i] -> Fill(RunID, cent, TMath::Cos( Psi2TPC[dir][i] ));
+            tp_sinPsi3_check[dir][i] -> Fill(RunID, cent, TMath::Sin( Psi3TPC[dir][i] ));
+            tp_cosPsi3_check[dir][i] -> Fill(RunID, cent, TMath::Cos( Psi3TPC[dir][i] ));
+
           }
           
         }// for(Int_t i = 0; i < n; i++)
@@ -1426,14 +1539,23 @@ void FemtoDstAnalyzer_Alex(const Char_t *inFile = "st_physics_12150008_raw_40300
 
         	v1 = TMath::Cos( Phi - Psi1[det][2] );
           tp_v1comb[det][cent] -> Fill( femtoTrack -> eta(), v1);
-
-	        if( femtoTrack -> eta() < 0 ) {
+          
+          h_sinPsiPhi1[det][1][cent] -> Fill(TMath::Sin( Phi - Psi1[det][2] ));
+          h_cosPsiPhi1[det][1][cent] -> Fill(TMath::Cos( Phi - Psi1[det][2] ));
+	        
+          if( femtoTrack -> eta() < 0 ) {
 	        	v1 = TMath::Cos( Phi - Psi1[det][1] );
 	          tp_v1ew[det][cent] -> Fill( femtoTrack -> eta(), v1);
+            
+            h_sinPsiPhi1[det][0][cent] -> Fill(TMath::Sin( Phi - Psi1[det][1] ));
+            h_cosPsiPhi1[det][0][cent] -> Fill(TMath::Cos( Phi - Psi1[det][1] ));
 	        }
 	        if( femtoTrack -> eta() > 0 ) {
 	          v1 = TMath::Cos( Phi - Psi1[det][0] );
 	          tp_v1ew[det][cent] -> Fill( femtoTrack -> eta(), v1);
+            
+            h_sinPsiPhi1[det][0][cent] -> Fill(TMath::Sin( Phi - Psi1[det][0] ));
+            h_cosPsiPhi1[det][0][cent] -> Fill(TMath::Cos( Phi - Psi1[det][0] ));
 	        }
   
         }
@@ -1443,6 +1565,11 @@ void FemtoDstAnalyzer_Alex(const Char_t *inFile = "st_physics_12150008_raw_40300
         	if( femtoTrack -> eta()  > abs(etagap[eta]) ) {
           	v2 = TMath::Cos( 2.0*(Phi - Psi2TPC[2][eta]) );
           	v3 = TMath::Cos( 3.0*(Phi - Psi3TPC[2][eta]) );
+
+            h_sinPsiPhi2TPC[1][eta][cent] -> Fill(TMath::Sin( Phi - Psi2TPC[2][eta] ));
+            h_cosPsiPhi2TPC[1][eta][cent] -> Fill(TMath::Cos( Phi - Psi2TPC[2][eta] ));
+            h_sinPsiPhi3TPC[1][eta][cent] -> Fill(TMath::Sin( Phi - Psi3TPC[2][eta] ));
+            h_cosPsiPhi3TPC[1][eta][cent] -> Fill(TMath::Cos( Phi - Psi3TPC[2][eta] ));
 
           	tp_v2hadrTPC[eta][1] -> Fill(pt, (Double_t)cent, v2, w );
 	        	tp_v3hadrTPC[eta][1] -> Fill(pt, (Double_t)cent, v3, w );
@@ -1495,6 +1622,11 @@ void FemtoDstAnalyzer_Alex(const Char_t *inFile = "st_physics_12150008_raw_40300
 	        	v2 = TMath::Cos( 2.0*(Phi - Psi2TPC[1][eta]) );
           	v3 = TMath::Cos( 3.0*(Phi - Psi3TPC[1][eta]) );
 
+            h_sinPsiPhi2TPC[0][eta][cent] -> Fill(TMath::Sin( Phi - Psi2TPC[1][eta] ));
+            h_cosPsiPhi2TPC[0][eta][cent] -> Fill(TMath::Cos( Phi - Psi2TPC[1][eta] ));
+            h_sinPsiPhi3TPC[0][eta][cent] -> Fill(TMath::Sin( Phi - Psi3TPC[1][eta] ));
+            h_cosPsiPhi3TPC[0][eta][cent] -> Fill(TMath::Cos( Phi - Psi3TPC[1][eta] ));
+
 	        	if( femtoTrack->gDCA(pVtx).Mag() < DCA_FLOW) {
 	        		tp_v2hadrTPC[eta][0] -> Fill(pt, (Double_t)cent, v2, w );
 	        		tp_v3hadrTPC[eta][0] -> Fill(pt, (Double_t)cent, v3, w );
@@ -1539,6 +1671,11 @@ void FemtoDstAnalyzer_Alex(const Char_t *inFile = "st_physics_12150008_raw_40300
 
 	        	v2 = TMath::Cos( 2.0*(Phi - Psi2TPC[0][eta]) );
           	v3 = TMath::Cos( 3.0*(Phi - Psi3TPC[0][eta]) );
+
+            h_sinPsiPhi2TPC[0][eta][cent] -> Fill(TMath::Sin( Phi - Psi2TPC[0][eta] ));
+            h_cosPsiPhi2TPC[0][eta][cent] -> Fill(TMath::Cos( Phi - Psi2TPC[0][eta] ));
+            h_sinPsiPhi3TPC[0][eta][cent] -> Fill(TMath::Sin( Phi - Psi3TPC[0][eta] ));
+            h_cosPsiPhi3TPC[0][eta][cent] -> Fill(TMath::Cos( Phi - Psi3TPC[0][eta] ));
 
           	if( femtoTrack->gDCA(pVtx).Mag() < DCA_FLOW) {
           		tp_v2hadrTPC[eta][0] -> Fill(pt, (Double_t)cent, v2, w );
