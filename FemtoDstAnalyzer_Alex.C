@@ -150,6 +150,35 @@ void FemtoDstAnalyzer_Alex(const Char_t *inFile = "st_physics_12150008_raw_40300
   Int_t runIdBins;
   Int_t runIdRange[2];
 
+  if( strncmp(energy, "62GeV",5) == 0) {
+
+    runIdRange[0]=11077023;
+    runIdRange[1]=11098060;
+    runIdBins=runIdRange[1]-runIdRange[0];
+    VtxZ=40.0;
+    VtxR=2.0;
+    delta_VtxY=0.0;
+    DCA_EVENT=2.0;
+    DCA_FLOW=1.0;
+
+    useRunQA = false;
+    DCA_SYS=2.0;
+    Double_t sys_VtxZ=35.0;
+    Int_t sys_nHits=18;
+    Double_t sys_DCA=1.5;
+    nSigm = 3.0;
+    badRuns ={11099102, 11099103, 11099104, 11099106, 11099107, 
+          11099125, 11100004, 11100005, 11100008, 11100010, 
+          11100011, 11100016, 11100020, 11100071, 11101014, 
+          11101104, 11102098, 11103009, 11103047, 11103065, 
+          11105011, 11105029, 11106026, 11106027, 11106028, 
+          11106029, 11106030, 11106040, 11106041, 11107008, 
+          11107046, 11107083, 11108040, 11108053, 11108065, 
+          11108075, 11109092, 11109102, 11109105, 11109104, 
+          11110005, 11110041, 11110042, 11110086};
+
+  }// if( strncmp(energy, "39GeV",5) == 0 )
+
   if( strncmp(energy, "39GeV",5) == 0) {
 
     runIdRange[0]=11095000;
@@ -437,7 +466,7 @@ void FemtoDstAnalyzer_Alex(const Char_t *inFile = "st_physics_12150008_raw_40300
    	hVtxZ = new TH1D("hVtxZ","hVtxZ;z (cm); Entries",
                            140, -70., 70.);
    	hRefMult2 = new TH1D("hRefMult2","Reference multiplicity in |#eta|<1;RefMult2;Entries",
-                               600, -0.5, 599.5);
+                               2000, -0.5, 1999.5);
    	hGRefMult = new TH1D("hGRefMult","Reference multiplicity of global tracks;gRefMult;Entries",
                                800, -0.5, 799.5);
    	hNumberOfPrimaries = new TH1D("hNumberOfPrimaries","Number of primary tracks;Number of primary tracks;Entries",
@@ -601,7 +630,7 @@ void FemtoDstAnalyzer_Alex(const Char_t *inFile = "st_physics_12150008_raw_40300
     hNumberEvents = new TH1D("hNumberEvents", "Number events for Run;Entries; RunID",
                               runIdBins, runIdRange[0], runIdRange[1]);
 
-    TH1D *hNumberEventsPID[3][2];
+    //TH1D *hNumberEventsPID[3][2];
     for(Int_t par=0; par<3; par++){
       for(Int_t j=0; j<2; j++){
           hNumberEventsPID[par][j]= new TH1D(Form("hNumberEvents_%s%s",particles[par],sign[j]), "Number tracks particles for RunID;Entries;RunID",
@@ -1008,7 +1037,7 @@ void FemtoDstAnalyzer_Alex(const Char_t *inFile = "st_physics_12150008_raw_40300
     }
 
     // Simple event cut
-    if( !isGoodEvent( event, VtxZ, VtxR, delta_VtxY ) ) continue;
+    //if( !isGoodEvent( event, VtxZ, VtxR, delta_VtxY ) ) continue;
 
     TVector3 pVtx = event->primaryVertex();
 
@@ -1076,7 +1105,7 @@ void FemtoDstAnalyzer_Alex(const Char_t *inFile = "st_physics_12150008_raw_40300
         if ( !femtoTrack->isPrimary() ) continue;
 
         // Simple single-track cut
-        if( !isGoodTrack(event, femtoTrack, DCA_EVENT) ) continue;
+        //if( !isGoodTrack(event, femtoTrack, DCA_EVENT) ) continue;
 
         pt = femtoTrack -> pt();
         q = femtoTrack -> charge();
